@@ -6,7 +6,7 @@
   const pageData = {
     title: 'Postpartum Doula Care',
     description: 'Nurturing care for your "fourth trimester", helping you rest, recover, and bond with your baby.',
-    heroImage: '/images/placeholders/postpartum-care.jpg',
+    heroImage: '/src/assets/images/historical_doula.png',
     icon: 'tabler:heart-handshake',
     ctaText: 'Learn About Our Postpartum Services',
     ctaLink: '/services/postpartum',

@@ -1,11 +1,22 @@
 ---
+// Main favicon
 import favIcon from '~/assets/images/logo-white.ico';
 // Fallback favicon and apple touch icon
 import favIconSvg from '~/assets/favicons/favicon.svg';
 import appleTouchIcon from '~/assets/favicons/apple-touch-icon.png';
 ---
 
-<link rel="shortcut icon" href={favIcon} />
+<!-- Standard favicon -->
+<link rel="icon" type="image/x-icon" href={favIcon} />
+
+<!-- SVG favicon for modern browsers -->
 <link rel="icon" type="image/svg+xml" href={favIconSvg.src} />
-<link rel="mask-icon" href={favIconSvg.src} color="#8D46E7" />
+
+<!-- Apple touch icon -->
 <link rel="apple-touch-icon" sizes="180x180" href={appleTouchIcon.src} />
+
+<!-- Legacy favicon support -->
+<link rel="shortcut icon" href={favIcon} />
+
+<!-- Theme color for the address bar -->
+<meta name="theme-color" content="#8D46E7" />

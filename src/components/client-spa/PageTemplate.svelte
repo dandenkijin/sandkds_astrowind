@@ -21,6 +21,7 @@
   export let pageId = '';
   export let heroImage: string | { src: string } = ''; // Can be a URL string or an imported image object
   export let imageUrl = ''; // Kept for backward compatibility
+  export let image = null; // Can be a URL string or an imported image object
   
   // Track mounted state for animations
   let isMounted = false;

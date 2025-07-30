@@ -5,8 +5,8 @@
   import ContentCard from '../../flowbite/ContentCard.svelte';
   
   // Import the image using Astro's asset handling
-  import heroImage from '../../../assets/images/doula_mountain_h_singlton_imrs.avif';
-  import cardImage from '../../../assets/images/care_items_robe_slippers.png';
+  import heroImage from '/src/assets/images/doula_mountain_h_singlton_imrs.avif';
+  import cardImage from '/src/assets/images/care_items_robe_slippers.png';
   const heroImageUrl = heroImage;
   
   // Page 1 specific data
@@ -17,7 +17,8 @@
     icon: 'tabler:home',
     ctaText: 'Book Your Free Consultation',
     ctaLink: '/contact',
-    pageId: 'page1'
+    pageId: 'page1',
+    image: cardImage
   };
   
   // Page 1 specific components

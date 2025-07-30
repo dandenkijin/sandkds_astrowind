@@ -19,7 +19,8 @@
 
   export let items: FeatureItem[] = [];
   export let columns = 3;
-  export let isDark = false;
+  // Dark mode is handled by Tailwind's dark: classes
+// Remove isDark prop as we'll use the dark: variant instead
   export let containerClass = '';
   export let defaultIcon: string | null = null;
   export let imageUrl: string | null = null;
@@ -34,7 +35,7 @@
   }[columns] || 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
 </script>
 
-<div class={`w-full ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} ${containerClass}`}>
+<div class={`w-full bg-white dark:bg-slate-900 text-gray-900 dark:text-white ${containerClass}`}>
   <div class="w-full max-w-7xl mx-auto px-4 py-12">
   {#if tagline}
     <p class="text-center text-primary-600 dark:text-primary-400 text-lg font-semibold mb-2">

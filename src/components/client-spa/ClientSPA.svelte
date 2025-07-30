@@ -2,6 +2,25 @@
   import { onMount } from 'svelte';
   import TablerIcon from '../ui/TablerIcon.svelte';
   
+  // Track image loading state
+  let loadedImages = [];
+  
+  // Function to load an image
+  function loadImage(path) {
+    if (!path || loadedImages.includes(path)) return;
+    
+    const img = new Image();
+    img.src = path;
+    img.onload = () => {
+      if (!loadedImages.includes(path)) {
+        loadedImages = [...loadedImages, path];
+      }
+    };
+    img.onerror = (error) => {
+      console.error('Error loading image:', path, error);
+    };
+  }
+  
   // Import page components
   import Page1 from './pages/Page1.svelte';
   import Page2 from './pages/Page2.svelte';
@@ -20,43 +39,55 @@
     page6: Page6
   };
 
-  // Page configurations (minimal data needed for navigation)
+  // Page configurations with imported images
   const pages = [
     { 
       id: 'page1', 
       title: 'Birth Doula Services', 
       description: 'Empowering, continuous support through your labor and delivery for a confident birth experience.',
-      icon: 'tabler:home' 
+      icon: 'tabler:home',
+      image: '/src/assets/images/doula_and_mom_and_ball.png',
+      imageAlt: 'Birth doula supporting a mother during labor'
     },
     { 
       id: 'page2', 
       title: 'Postpartum Care', 
       description: 'Compassionate support for new parents during the transformative postpartum period.',
-      icon: 'tabler:heart-handshake' 
+      icon: 'tabler:heart-handshake',
+      image: '/src/assets/images/doula_baby_mom.png',
+      imageAlt: 'Mother and newborn bonding during postpartum'
     },
     { 
       id: 'page3', 
       title: 'Lactation Support', 
       description: 'Expert guidance and support for successful breastfeeding and lactation.',
-      icon: 'tabler:users' 
+      icon: 'tabler:users',
+      image: '/src/assets/images/lacsup_mom-baby.jpg',
+      imageAlt: 'Mother breastfeeding her baby with support'
     },
     { 
       id: 'page4', 
       title: 'Sleep Coaching', 
       description: 'Gentle, evidence-based strategies to help your baby and family get the rest you need.',
-      icon: 'tabler:book' 
+      icon: 'tabler:book',
+      image: '/src/assets/images/sleep-coaching.png',
+      imageAlt: 'Peacefully sleeping baby'
     },
     { 
       id: 'page5', 
       title: 'Prenatal Education', 
       description: 'Comprehensive classes to prepare you for childbirth, newborn care, and early parenthood.',
-      icon: 'tabler:users' 
+      icon: 'tabler:users',
+      image: '/src/assets/images/prenatal-education.png',
+      imageAlt: 'Group prenatal class in session'
     },
     { 
       id: 'page6', 
       title: 'Virtual Doula Support', 
       description: 'Professional doula support available wherever you are through virtual consultations.',
-      icon: 'tabler:heart-broken' 
+      icon: 'tabler:heart-broken',
+      image: '/src/assets/images/virtual-support.png',
+      imageAlt: 'Virtual doula consultation on a laptop'
     }
   ];
   
@@ -82,8 +113,14 @@
   let isMounted = false;
   
   // Lifecycle
-  onMount(() => {
+  onMount(async () => {
     isMounted = true;
+    
+    // Load all images in the background
+    for (const page of pages) {
+      if (page.image) loadImage(page.image);
+    }
+    
     // Set initial page from URL hash if present
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace('#', '');
@@ -94,7 +131,10 @@
         }
       }
     }
-    return () => { isMounted = false; };
+    
+    return () => {
+      isMounted = false;
+    };
   });
   
   // Navigation function
@@ -158,6 +198,7 @@
     {#each pages as page, i (page.id)}
       <div 
         on:click={() => navigate(page.id)}
+
         class={`
           group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 flex flex-col
           ${currentPage === page.id 
@@ -170,18 +211,39 @@
         on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && navigate(page.id)}
         aria-label={`Navigate to ${page.title}`}
       >
-        <!-- Always show the full card content -->
-        <div class="w-full h-40 bg-slate-100 dark:bg-slate-700/50 overflow-hidden">
-          <div class="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-600 dark:to-slate-700 flex items-center justify-center">
-            <TablerIcon name={page.icon} size={48} className="text-slate-400 dark:text-slate-500" />
+        <!-- Card Image -->
+        <div class="w-full h-40 bg-slate-100 dark:bg-slate-700/50 overflow-hidden relative">
+          <div class="relative w-full h-full">
+            {#if page.image}
+              <img 
+                src={page.image}
+                alt={page.imageAlt || page.title}
+                class="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                class:opacity-0={!loadedImages.includes(page.image)}
+                class:opacity-100={loadedImages.includes(page.image)}
+                loading={i < 3 ? 'eager' : 'lazy'}
+                fetchpriority={i < 2 ? 'high' : 'auto'}
+                decoding="async"
+                style="transition: opacity 0.3s ease-in-out;"
+                on:load|once={() => {
+                  if (!loadedImages.includes(page.image)) {
+                    loadedImages = [...loadedImages, page.image];
+                  }
+                }}
+                on:error={(e) => {
+                  console.error('Error loading image:', page.image);
+                  e.target.style.display = 'none';
+                  const fallback = e.target.nextElementSibling;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+            {/if}
+            <div class="image-fallback absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-600 dark:to-slate-700" style="display: {page.image ? 'none' : 'flex'};">
+              <div class="text-center p-4">
+                <TablerIcon name={page.icon} size={32} className="text-slate-400 dark:text-slate-500" />
+              </div>
+            </div>
           </div>
-          {#if false}
-          <img 
-            src={page.image} 
-            alt={page.title}
-            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-          {/if}
         </div>
 
         <!-- Content Section -->

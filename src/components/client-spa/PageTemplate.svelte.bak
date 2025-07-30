@@ -1,0 +1,162 @@
+<script lang="ts">
+  import TablerIcon from "../ui/TablerIcon.svelte";
+
+  // export let pageNumber: number;
+  export let title: string;
+  export let description: string;
+  export const features: string[] = [];
+  export const ctaText: string = 'Learn More';
+  export const ctaLink: string = '#';
+  export const imageUrl: string = '';
+  export const icon: string = '';
+  export const pageNumber: number = 1;
+</script>
+
+<div class="page-content">
+  <div class="page-header">
+    {#if icon}
+      <div class="page-icon">
+        <TablerIcon name={icon} size={48} className="text-current" />
+      </div>
+    {/if}
+    <h2>{title}</h2>
+    {#if description}
+      <p class="page-description">{description}</p>
+    {/if}
+  </div>
+
+  {#if features.length > 0}
+    <div class="features-grid">
+      {#each features as feature}
+        <div class="feature-item">
+          <TablerIcon name="tabler:check" size={24} className="feature-icon" />
+          <span>{feature}</span>
+        </div>
+      {/each}
+    </div>
+  {/if}
+
+  {#if imageUrl}
+    <div class="page-image">
+      <img src={imageUrl} alt={title} />
+    </div>
+  {/if}
+
+  {#if ctaLink && ctaLink !== '#'}
+    <div class="page-actions">
+      <a href={ctaLink} class="cta-button">
+        {ctaText}
+      </a>
+    </div>
+  {/if}
+</div>
+
+<style>
+  .page-content {
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .page-icon {
+    margin-bottom: 1rem;
+    color: #7c3aed;
+  }
+
+  h2 {
+    font-family: var(--aw-font-heading, 'Dancing Script'), cursive;
+    font-size: 2.5rem;
+    color: #1e1b4b;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #7c3aed, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+
+  .page-description {
+    font-size: 1.25rem;
+    color: #4b5563;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .feature-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .feature-icon {
+    color: #7c3aed;
+    flex-shrink: 0;
+  }
+
+  .page-image {
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  .page-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  .page-actions {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(90deg, #7c3aed, #8b5cf6);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    h2 {
+      font-size: 2rem;
+    }
+
+    .page-description {
+      font-size: 1.1rem;
+    }
+  }
+</style>

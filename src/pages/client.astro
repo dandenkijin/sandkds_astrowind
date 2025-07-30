@@ -1,0 +1,131 @@
+---
+/// <reference path="../types.d.ts" />
+import Layout from '~/layouts/PageLayout.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+import Features from '~/components/widgets/Features.astro';
+import Stats from '~/components/widgets/Stats.astro';
+import Features3 from '~/components/widgets/Features3.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+// Import Svelte components with explicit .svelte extension
+import ClientSPA from '../components/client-spa/ClientSPA.svelte';
+// import TestSvelte from '../components/TestSvelte.svelte';
+
+//import { YouTube } from 'astro-embed';
+
+const metadata = {
+  title: 'Family Support Services',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- Hero Widget ******************* -->
+
+  <Hero
+    tagline="Family Support Services"
+    actions={[
+      {
+        variant: 'primary',
+        target: '_blank',
+        text: `Let's Get Started`,
+        href: '#',
+        icon: 'tabler:download',
+      },
+      { text: 'Learn more', href: '#features' },
+    ]}
+  >
+    <Fragment slot="title">
+      Your Journey, Safely Supported Every Step
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      At Snugs & Kisses, we believe every family deserves to feel cherished, supported, and confident. Our expert doulas, lactation consultants, and newborn care specialists provide gentle, nonjudgmental care tailored to your unique needs.
+    </Fragment>
+    
+
+
+    {/* <Fragment slot="image">
+      <YouTube id="u792CxDT7cE" title=" The Essential Ingredient: Doula " />
+      <style is:inline>
+        lite-youtube {
+          margin: 0 auto;
+          max-width: 100%;
+        }
+      </style>
+    </Fragment> */}
+  </Hero>
+  
+  <!-- SPA Section - Full Width -->
+  <section class="w-full">
+    <div class="w-[90vw] mx-auto">
+      <ClientSPA client:load />
+    </div>
+  </section>
+
+ 
+  <!-- Features Widget *************** -->
+
+  <Features
+    id="features"
+    title="Main features of our templates"
+    subtitle="Possess several key characteristics to effectively cater to the needs of startups and entrepreneurs."
+    columns={3}
+    items={[
+      {
+        title: 'Modern and Professional Design',
+        description:
+          'Have a contemporary design that reflects current design trends and gives a professional impression.',
+        icon: 'tabler:artboard',
+      },
+      {
+        title: 'Responsive and Mobile-Friendly',
+        description: 'Adapt seamlessly to different screen sizes and devices to ensure a consistent experience.',
+        icon: 'tabler:picture-in-picture',
+      },
+      {
+        title: 'Customizability',
+        description:
+          'Easily customizable, allowing users to adapt the design, colors, typography, and content to match their brand identity.',
+        icon: 'tabler:adjustments-horizontal',
+      },
+      {
+        title: 'Fast Loading Times',
+        description: 'Optimized for speed to ensure a smooth user experience and favorable search engine rankings.',
+        icon: 'tabler:rocket',
+      },
+      {
+        title: 'Search Engine Optimization (SEO)',
+        description:
+          'Incorporate SEO best practices in template structure and code to improve visibility in search engine results.',
+        icon: 'tabler:arrows-right-left',
+      },
+      {
+        title: 'Compatibility',
+        description: 'The templates work seamlessly across various content management systems and website builders.',
+        icon: 'tabler:plug-connected',
+      },
+    ]}
+  />
+
+  <!-- CallToAction Widget *********** -->
+
+  <CallToAction
+    actions={[
+      {
+        variant: 'primary',
+        target: '_blank',
+        text: 'Get templates',
+        href: 'https://github.com/onwidget/astrowind',
+        icon: 'tabler:download',
+      },
+    ]}
+  >
+    <Fragment slot="title">Be a part of our vision</Fragment>
+
+    <Fragment slot="subtitle">
+      Discover a dynamic work environment, unparalleled growth opportunities, and the chance to make a meaningful
+      impact.
+    </Fragment>
+  </CallToAction>
+</Layout>

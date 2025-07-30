@@ -130,6 +130,8 @@ export interface Stat {
   amount?: number | string;
   title?: string;
   icon?: string;
+  description?: string;
+  class?: string;
 }
 
 export interface Item {
@@ -276,6 +278,7 @@ export interface Content extends Omit<Headline, 'classes'>, Widget {
   isReversed?: boolean;
   isAfterContent?: boolean;
   callToAction?: CallToAction;
+  containerClass?: string;
 }
 
 export interface Contact extends Omit<Headline, 'classes'>, Form, Widget {}

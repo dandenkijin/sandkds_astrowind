@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Accordion from '../components/Accordion.svelte';
+
+// Sample accordion items
+const faqItems = [
+  {
+    title: 'What is Svelte?',
+    content: 'Svelte is a modern JavaScript framework for building user interfaces. Unlike traditional frameworks, Svelte is a compiler that converts your app into highly efficient JavaScript at build time.',
+    isOpen: true
+  },
+  {
+    title: 'How does the accordion work?',
+    content: 'The accordion allows users to toggle the display of content sections. Clicking on a header expands or collapses the associated content. Only one item can be open at a time by default, but you can enable multiple items to be open simultaneously.'
+  },
+  {
+    title: 'Is this component accessible?',
+    content: 'Yes, this accordion is built with accessibility in mind. It includes proper ARIA attributes and keyboard navigation support.'
+  },
+  {
+    title: 'Can I customize the styling?',
+    content: 'Absolutely! The component includes default styling, but you can easily override it by modifying the CSS in the component file or by using your own styles with higher specificity.'
+  }
+];
+
+const metadata = {
+  title: 'Accordion Demo',
+  description: 'A demo of the accessible Svelte accordion component'
+};
+---
+
+<Layout metadata={metadata}>
+  <main class="max-w-3xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-8 text-center">Frequently Asked Questions</h1>
+    
+    <div class="mb-12">
+      <h2 class="text-xl font-semibold mb-4">Single Item Open (Default)</h2>
+      <Accordion items={faqItems} />
+    </div>
+    
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Multiple Items Open</h2>
+      <Accordion items={faqItems} multiple={true} />
+    </div>
+  </main>
+  
+  <style>
+    /* Custom styles can be added here */
+    .accordion {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>
+</Layout>

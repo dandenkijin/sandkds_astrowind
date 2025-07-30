@@ -1,0 +1,336 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+
+import Header from '~/components/widgets/Header.astro';
+import Hero2 from '~/components/widgets/Hero2.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+import Features from '~/components/widgets/Features.astro';
+import Content from '~/components/widgets/Content.astro';
+
+import { headerData } from '~/navigation';
+import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
+import babyOnCounter from '~/assets/images/baby_on_counter.png';
+import dadImage from '~/assets/images/dad_infant_park.png';
+import motherAndKids from '~/assets/images/mother_kids_blocks_rug_sunlight.png';
+import doulaBabyMom from '~/assets/images/doula_baby_mom.png';
+import Stats from '~/components/widgets/Stats.astro';
+import girlMomGirl from '~/assets/images/girl_mom_girl.png';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+
+const metadata = {
+  title: 'Corporate',
+};
+---
+
+<Layout metadata={metadata}>
+  <Fragment slot="header">
+    <Header
+      {...headerData}
+      actions={[
+        {
+          variant: 'secondary',
+          text: 'Login',
+          href: '#',
+        },
+        {
+          variant: 'primary',
+          text: 'Sign Up',
+          href: '#',
+        },
+      ]}
+      isSticky
+    />
+  </Fragment>
+
+  <!-- Hero2 Widget ******************* -->
+
+  <Hero2
+    tagline="Partner With Us to Support Every Family, Fully"
+    actions={[
+      { variant: 'primary', target: '_blank', text: 'Get Started', href: 'https://github.com/onwidget/astrowind' },
+      { text: 'Learn more', href: '#features' },
+    ]}
+    image={{
+      src: babyOnCounter,
+      alt: 'Happy baby with parents',
+    }}
+  >
+    <Fragment slot="title">
+      Comprehensive Employee Wellness Programs That Actually Work <br />
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      Snugs and Kisses provides unparalleled family support, trusted by families and organizations to empower
+      parents during one of life's most significant transitions. Our services are thoughtfully designed to
+      meet the unique needs of modern families, offering flexible, compassionate care that fits seamlessly
+      into today's busy lifestyles. We partner with companies and healthcare professionals to enhance employee
+      wellness, ensuring parents receive the expert support they need to thrive both at home and in their
+      careers. Investing in family support yields measurable ROI through increased retention, reduced
+      absenteeism, and a more engaged, productive workforce.
+    </Fragment>
+  </Hero2>
+
+  <!-- Stats Widget -->
+  <Stats
+    stats={[
+      { 
+        amount: '30%', 
+        description: 'Lower turnover observed in companies offering tailored family benefits.',
+        icon: 'tabler:users-group',
+      },
+      { 
+        amount: 'Up to 3x', 
+        description: 'ROI achieved by companies through savings from reduced turnover, lower absenteeism, and increased productivity.',
+        icon: 'tabler:chart-bar',
+      },
+      { 
+        amount: '68%', 
+        description: 'Of employees say workplace benefits significantly impact their decision to stay long-term.',
+        icon: 'tabler:thumb-up',
+      },
+      { 
+        amount: '50%', 
+        description: 'Increase in employee engagement in companies that provide family and postpartum support.',
+        icon: 'tabler:trending-up',
+      },
+    ]}
+  />
+
+  <!-- Features2 Widget ************** -->
+  <CallToAction
+    actions={[
+      {
+        variant: 'primary',
+        target: '_blank',
+        text: 'Book a Discovery Call',
+        href: '#',
+        icon: 'tabler:download',
+      },
+    ]}
+  >
+    <Fragment slot="title">Ready to Elevate Your Employee Benefits?</Fragment>
+
+    <Fragment slot="subtitle">
+      Book a Discovery Call to learn more about our unique benefits.
+    </Fragment>
+  </CallToAction>
+
+  <!-- HeroText Widget with Content -->
+  <HeroText 
+    content="At Snugs and Kisses, we recognize that every family's journey is unique. Whether employees are welcoming a child through birth, adoption, or surrogacy, our comprehensive postpartum support is tailored to their needs. Our services ensure that employees and their families receive the care they need to recover and adjust. By providing personalized support, we help employees thrive both at home and in the workplace, fostering a more engaged, loyal, and productive workforce. Investing in postpartum care not only benefits families but also strengthens workplace culture and overall employee well-being."
+  >
+    <div class="max-w-4xl mx-auto px-4 pt-6 text-center">
+      <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+        <slot name="content" />
+      </p>
+    </div>
+  </HeroText>
+
+  <!-- Features Widget *************** -->
+
+  <Features
+    id="features"
+    title="What are the benefits of our Support Program?"
+    subtitle="By investing in our Support Program, your company can reap numerous benefits, including:"
+    columns={2}
+    items={[
+      { title: 'Increased Employee Productivity',
+        description: 'A 25% productivity boost has been observed in employees who feel supported during their transition back to work. When parents receive the care they need, they can focus on their roles with confidence, knowing their family is in good hands.', 
+        icon: 'tabler:rocket',
+      },
+      { title: 'Reduced Presenteeism',
+        description: 'By introducing family support benefits, such as postpartum care services, you can reduce losses associated with presenteeism—estimated at up to $3,000 per employee annually—while improving employee well-being, productivity, and overall performance.',
+        icon: 'tabler:users-group',
+      },
+      { title: 'Attracting Top Talent',
+        description: 'Job seekers prioritize work-life balance over salary when evaluating job offers, with 43% of them valuing this aspect. Providing comprehensive family support programs helps your company stand out, attracting top talent who value family-friendly workplaces.',
+        icon: 'tabler:layers-union',
+      },
+      { title: 'Personalized Postpartum Support',
+        description: 'Doulas provide one-on-one care tailored to each family\'s unique needs, offering emotional support, breastfeeding guidance, and newborn care education that helps parents feel confident and supported during the critical postpartum period.',
+        icon: 'tabler:heart-handshake',
+      },
+      { title: 'Reduced Healthcare Costs',
+        description: 'Studies show that doula-supported births have lower rates of medical interventions, including C-sections, which can lead to significant healthcare cost savings for employers while promoting better health outcomes for both parents and babies.',
+        icon: 'tabler:chart-line',
+      },
+      { title: 'Enhanced Employee Well-being',
+        description: 'Employees with doula support report lower stress levels and higher satisfaction with their birth and postpartum experiences, leading to improved mental health and faster return to work with greater focus and engagement.',
+        icon: 'tabler:leaf',
+      }
+    ]}
+  />
+
+
+
+  <!-- Content Widget **************** -->
+
+  <Content
+    title="Build a Flexible Solution for your Team"
+    subtitle="We work with both small and large companies, offering flexible support solutions that are tailored to fit your organization's needs. Our goal is to provide comprehensive, high-quality care while ensuring our services align with your company's resources."
+    isReversed
+    items={[
+      {
+        description:
+          'Workshops and resources for both new and experienced parents, providing valuable insights for every stage.',
+      },
+      {
+        description:
+          'Effective strategies for balancing work and family life, helping employees manage their responsibilities seamlessly.',
+      },
+      {
+        description:
+          'Personalized guidance to help employees navigate transitions with confidence, ensuring they feel supported both at home and in the workplace.',
+      },
+    ]}
+    image={{
+      src: motherAndKids,
+      alt: 'Mother and Kids Playing with Blocks',
+    }}
+  >
+    <Fragment slot="content">
+      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">
+        Parental Guidance & Coaching: <br /><span class="text-2xl">  Supporting Your Employees Through Care</span>
+      </h3>
+    </Fragment>
+
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-rose-50 dark:bg-rose-950/20"></div>
+    </Fragment>
+  </Content>
+
+  <!-- Content Widget **************** -->
+
+  <Content
+    isAfterContent={true}
+    items={[
+      {
+        description: `Comprehensive education and guidance on pregnancy, labor, and delivery to prepare employees for every step of their journey.`,
+      },
+      {
+        description: `Personalized support in navigating and preparing for childbirth, ensuring employees feel confident and informed.`,
+      },
+      {
+        description: `Emotional and practical assistance tailored to each family's unique needs, helping employees balance their responsibilities at home and work.`,
+      },
+    ]}
+    image={{
+      src: dadImage, 
+      alt: 'Dad Image'
+      }}
+  >
+    <Fragment slot="content">
+      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">
+        Birth & Pregnancy Support: <br /><span class="text-2xl">Extending the Reach of your Corporate Culture</span>
+      </h3>
+    </Fragment>
+
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-rose-50 dark:bg-rose-950/20"></div>
+    </Fragment>
+  </Content>
+
+  <!-- Content Widget **************** -->
+
+  <Content
+    isReversed
+    isAfterContent={true}
+    items={[
+      {
+        description: `Professional postpartum support designed to assist employees in their physical and emotional recovery after childbirth.`,
+      },
+      {
+        description: `Infant care guidance, including feeding, sleep routines, and bonding, to help employees adjust to their new role as parents.`,
+      },
+      {
+        description: `Flexible, around-the-clock care options to alleviate stress and help employees feel confident and supported during their transition.`,
+      },
+    ]}
+    image={{
+      src: doulaBabyMom,
+      alt: 'Doula Baby Mom Image',
+    }}
+  >
+    <Fragment slot="content">
+      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">
+        Postpartum Support: <br /><span class="text-2xl">Empower Your Team to Thrive</span>
+      </h3>
+    </Fragment>
+
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-rose-50 dark:bg-rose-950/20"></div>
+    </Fragment>
+  </Content>
+
+  <!-- Content Widget **************** -->
+
+  <Content
+    items={[
+      {
+        description: `Dependable in-home care designed to support employees when their usual childcare arrangements are unavailable.`, 
+      },
+      {
+        description: `Flexible scheduling options to accommodate work demands and personal commitments.
+`,
+      },
+      {
+        description: `Experienced caregivers providing a seamless, stress-free solution for both parents and children of all ages.`,
+      },
+    ]}
+    image={{
+      src: girlMomGirl,
+      alt: 'Mother and Daughters Image',
+    }}
+  >
+    <Fragment slot="content">
+      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">
+        Childcare: <br /> <span class="text-2xl">Protecting your Employees</span>
+      </h3>
+    </Fragment>
+
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-rose-50 dark:bg-rose-950/20"></div>
+    </Fragment>
+  </Content>
+
+  <Features2
+    title="Your Strategic Advantages with Our Service"
+    items={[
+      {
+        title: 'Focused Expertise in Postpartum Care',
+      },
+      {
+        title: 'In-House Team of Trained Professionals',
+      },
+      {
+        title: 'Local Expertise and Community Integration',
+      },
+      {
+        title: 'Data-Backed Results',
+      },
+      {
+        title: 'Clear Communication and Reporting',
+      },
+      {
+        title: 'Flexible and Adaptive Services',
+      }
+    ]}
+  >
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-rose-50 dark:bg-rose-950/20"></div>
+    </Fragment>
+  </Features2>
+
+  <!-- BlogLatestPost Widget **************** -->
+
+  <BlogLatestPosts
+    id="blog"
+    title="Stay informed with AstroWind's blog"
+    information={`Explore our collection of articles, guides, and tutorials on web development, design trends, and using AstroWind effectively for your projects.`}
+  >
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-rose-50 dark:bg-rose-950/20"></div>
+    </Fragment>
+  </BlogLatestPosts>
+</Layout>

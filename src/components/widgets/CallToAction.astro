@@ -1,58 +1,140 @@
 ---
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
-import type { CallToAction, Widget } from '~/types';
+import type { Widget } from '~/types';
 import Headline from '~/components/ui/Headline.astro';
 import Button from '~/components/ui/Button.astro';
+import type { CallToAction as ButtonProps } from '~/types';
+import careItemsImage from '~/assets/images/care_items_robe_slippers.png';
 
-interface Props extends Widget {
+// Define a more specific CallToAction type
+type ActionProps = Omit<ButtonProps, 'class'> & {
+  class?: string;
+};
+
+interface Props extends Omit<Widget, 'classes'> {
   title?: string;
   subtitle?: string;
   tagline?: string;
-  callToAction?: CallToAction;
-  actions?: string | CallToAction[];
+  callToAction?: ActionProps;
+  actions?: string | ActionProps[];
+  classes?: {
+    container?: string;
+    headline?: {
+      container?: string;
+      title?: string;
+      subtitle?: string;
+      tagline?: string;
+    };
+  };
+  image?: {
+    src: string;
+    alt: string;
+    position?: 'left' | 'right';
+    width?: number;
+    height?: number;
+  };
 }
 
+// Get the actions from props with proper type handling
+const actions = 'actions' in Astro.props ? Astro.props.actions : [];
 const {
   title = await Astro.slots.render('title'),
   subtitle = await Astro.slots.render('subtitle'),
   tagline = await Astro.slots.render('tagline'),
-  actions = await Astro.slots.render('actions'),
-
+  // Remove actions from destructuring to prevent type issues
+  // New image prop
+  image,
   id,
   isDark = false,
-  classes = {},
+  classes = { container: '' },
   bg = await Astro.slots.render('bg'),
-} = Astro.props;
+} = Astro.props as Omit<Props, 'actions'>;
+
+// Set default image position if not provided
+const imagePosition = image?.position || 'right'; // 'left' or 'right'
 ---
 
-<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
-  <div
-    class="max-w-3xl mx-auto text-center p-6 rounded-md shadow-xl dark:shadow-none dark:border dark:border-slate-600"
-  >
-    <Headline
-      title={title}
-      subtitle={subtitle}
-      tagline={tagline}
-      classes={{
-        container: 'mb-0 md:mb-0',
-        title: 'text-4xl md:text-4xl font-bold tracking-tighter mb-4 font-heading',
-        subtitle: 'text-xl text-muted dark:text-slate-400',
-      }}
-    />
-    {
-      actions && (
-        <div class="max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4 mt-6">
-          {Array.isArray(actions) ? (
-            actions.map((action) => (
-              <div class="flex w-full sm:w-auto">
-                <Button {...(action || {})} class="w-full sm:mb-0" />
-              </div>
-            ))
-          ) : (
-            <Fragment set:html={actions} />
-          )}
-        </div>
-      )
-    }
+<WidgetWrapper 
+  id={id} 
+  isDark={isDark} 
+  containerClass={`max-w-6xl mx-auto ${classes.container || ''}`} 
+  bg={bg}
+>
+  <div class="flex flex-col md:flex-row items-center gap-8 p-6 rounded-md shadow-xl dark:shadow-none dark:border dark:border-slate-600">
+    {/* Care Items Image on Left */}
+    <div class="w-full md:w-2/5 flex justify-center items-center">
+      <img 
+        src={careItemsImage.src} 
+        alt="Care items including robe and slippers" 
+        class="max-h-[120%] w-auto object-contain"
+        loading="lazy"
+      />
+    </div>
+    
+    <div class={`${image ? 'w-full md:w-1/2' : 'w-full max-w-3xl mx-auto text-center'}`}>
+      <Headline
+        title={title}
+        subtitle={subtitle}
+        tagline={tagline}
+        classes={{
+          container: 'mb-0 md:mb-0 ' + (classes?.container || ''),
+          title: 'text-4xl md:text-4xl font-bold tracking-tighter mb-4 font-heading',
+          subtitle: 'text-xl text-muted dark:text-slate-400',
+          ...(classes?.headline || {})
+        }}
+      />
+      {
+        actions && (
+          <div class="max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4 mt-6">
+            {Array.isArray(actions) ? (
+              actions.map((action, index) => {
+                if (!action) return null;
+                
+                // Safely extract properties with type assertion
+                const actionProps = action as ActionProps;
+                const className = 'class' in actionProps ? actionProps.class : '';
+                
+                // Create a unique key for the button
+                const uniqueKey = `action-${index}-${actionProps.text || ''}`.replace(/\s+/g, '-');
+                
+                // Create a button element with explicit props
+                const button = (
+                  <Button
+                    text={actionProps.text}
+                    href={actionProps.href}
+                    target={actionProps.target}
+                    variant={actionProps.variant}
+                    icon={actionProps.icon}
+                    rel={actionProps.rel}
+                    data-astro-prefetch={actionProps['data-astro-prefetch']}
+                    class={`w-full sm:mb-0 ${className || ''}`}
+                  />
+                );
+                
+                // Return the button wrapped in a div with the key
+                return {
+                  [uniqueKey]: <div class="flex w-full sm:w-auto">{button}</div>
+                }[uniqueKey];
+              })
+            ) : typeof actions === 'string' ? (
+              <Fragment set:html={actions} />
+            ) : null}
+          </div>
+        )
+      }
+    </div>
+    
+    {image && imagePosition === 'right' && (
+      <div class="w-full md:w-1/2">
+        <img 
+          src={image.src} 
+          alt={image.alt || ''} 
+          class="w-full h-auto rounded-lg object-cover"
+          width={image.width}
+          height={image.height}
+          loading="lazy"
+        />
+      </div>
+    )}
   </div>
 </WidgetWrapper>

@@ -1,0 +1,54 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import TestSvelteComponent from '../components/TestSvelte.svelte';
+
+const metadata = {
+  title: 'Svelte Test',
+};
+---
+
+<Layout metadata={metadata}>
+  <div class="container mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-8">Svelte Component Test</h1>
+    
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-4">Simple Counter Component</h2>
+      <TestSvelteComponent client:load />n
+    </div>
+    
+    <div class="mt-8 p-6 bg-gray-100 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4">Debug Info</h2>
+      <pre id="debug-info" class="bg-black text-green-400 p-4 rounded text-sm overflow-x-auto">
+        Loading debug information...
+      </pre>
+    </div>
+  </div>
+
+  <script>
+    // Simple debug information - using type assertion for window
+    document.addEventListener('DOMContentLoaded', () => {
+      const debugEl = document.getElementById('debug-info');
+      if (debugEl) {
+        const debugInfo = {
+          window: {
+            location: window.location.href,
+            userAgent: navigator.userAgent,
+            svelte: 'Check browser console for Svelte',
+          },
+          component: {
+            status: 'TestSvelteComponent should be visible above',
+          },
+          timestamp: new Date().toISOString(),
+        };
+        
+        // Log to console for debugging
+        console.log('Debug Info:', {
+          isClient: typeof window !== 'undefined',
+          testComponentMounted: !!document.querySelector('test-svelte-component')
+        });
+        
+        debugEl.textContent = JSON.stringify(debugInfo, null, 2);
+      }
+    });
+  </script>
+</Layout>

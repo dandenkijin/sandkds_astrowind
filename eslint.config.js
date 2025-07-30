@@ -30,7 +30,8 @@ export default [
   {
     files: ['**/*.{js,jsx,astro}'],
     rules: {
-      'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
+      'no-non-null-assertionixed-spaces-and-tabs': ['error', 'smart-tabs'],
+      'prefer-const': 'off',
     },
   },
   {
@@ -42,7 +43,8 @@ export default [
     },
     rules: {
       // Note: you must disable the base rule as it can report incorrect errors
-      'no-unused-vars': 'off',
+      // 'no-unused-vars': 'off',
+      'prefer-const': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

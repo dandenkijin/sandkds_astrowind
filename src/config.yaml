@@ -1,30 +1,29 @@
 site:
-  name: AstroWind
-  site: 'https://astrowind.vercel.app'
+  name: Snugs and Kisses Doula Services
+  site: 'https://snugsandkissesds.com'
   base: '/'
   trailingSlash: false
+  ## googleSiteVerificationId: orcPxI47GSa-cRvY11tUe6iGg2IO_RPvnA1q95iEM3M
 
-  googleSiteVerificationId: orcPxI47GSa-cRvY11tUe6iGg2IO_RPvnA1q95iEM3M
-
-# Default SEO metadata
+  # Default SEO metadata
 metadata:
   title:
-    default: AstroWind
-    template: '%s — AstroWind'
-  description: "\U0001F680 Suitable for Startups, Small Business, Sass Websites, Professional Portfolios, Marketing Websites, Landing Pages & Blogs."
+    default: Snugs and Kisses Doula Services
+    template: '%s — Snugs and Kisses Doula Services'
+  description: "Snugs and Kisses Doula Services is a doula agency that provides doula services both to families and the corporate sector."
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: AstroWind
+    site_name: Snugs and Kisses Doula Services
     images:
-      - url: '~/assets/images/default.png'
-        width: 1200
-        height: 628
+    - url: '~/assets/images/default.png'
+      width: 1200
+      height: 628
     type: website
   twitter:
-    handle: '@onwidget'
-    site: '@onwidget'
+    handle: '@snugsandkissesds'
+    site: '@snugsandkissesds'
     cardType: summary_large_image
 
 i18n:

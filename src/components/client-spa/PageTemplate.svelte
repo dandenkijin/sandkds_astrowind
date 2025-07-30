@@ -164,14 +164,25 @@
           </div>
         {:else}
           <!-- Default widget rendering -->
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div class="widget-item">
+          {#if widget.id === 'content-card'}
+            <!-- Full width for content card -->
+            <div class="w-full">
               <svelte:component
                 this={widget.component}
                 {...widget.props}
               />
             </div>
-          </div>
+          {:else}
+            <!-- Grid layout for other widgets -->
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 w-full">
+              <div class="widget-item">
+                <svelte:component
+                  this={widget.component}
+                  {...widget.props}
+                />
+              </div>
+            </div>
+          {/if}
         {/if}
       {/each}
       <div class="mt-4 text-center">

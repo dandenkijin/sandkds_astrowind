@@ -2,11 +2,11 @@
   import { onMount } from 'svelte';
   import PageTemplate from '../PageTemplate.svelte';
   import FeaturesGrid from '../../flowbite/FeaturesGrid.svelte';
-  import FeatureContent from '../../flowbite/FeatureContent.svelte';
+  import ContentCard from '../../flowbite/ContentCard.svelte';
   
   // Import the image using Astro's asset handling
   import heroImage from '../../../assets/images/doula_mountain_h_singlton_imrs.avif';
-  import featureImage from '../../../assets/images/care_items_robe_slippers.png';
+  import cardImage from '../../../assets/images/care_items_robe_slippers.png';
   const heroImageUrl = heroImage;
   
   // Page 1 specific data
@@ -22,23 +22,34 @@
   
   // Page 1 specific components
   const pageWidgets = [
-    // Feature Content Component
+    // Content Card Component
     {
-      id: 'feature-content',
-      component: FeatureContent,
+      id: 'content-card',
+      component: ContentCard,
       showOnPages: ['page1'],
       props: {
         title: 'Personalized Birth Support',
         content: `
-          <p>Every birth journey is unique, and we're here to support yours with personalized care and attention. Our experienced doulas provide emotional, physical, and informational support throughout your pregnancy, labor, and beyond.</p>
-          <p class="mt-4">We believe in empowering you with knowledge and confidence as you prepare for one of life's most transformative experiences.</p>
+          <p>As your birth doula, I provide continuous physical, emotional, and informational support before, during, and after childbirth. My services include:</p>
+          <ul class="list-disc pl-5 mt-2 space-y-1">
+            <li>2-3 prenatal visits to discuss your birth preferences</li>
+            <li>24/7 on-call support from 38-42 weeks</li>
+            <li>Continuous labor support at your chosen birth location</li>
+            <li>Initial postpartum support and breastfeeding assistance</li>
+            <li>One follow-up postpartum visit</li>
+          </ul>
         `,
-        image: featureImage,
-        imageAlt: 'A doula providing support during labor',
-        ctaText: 'Learn More About Our Services',
-        ctaLink: '/services',
-        reverse: false,
-        className: ''
+        image: cardImage,
+        imageAlt: 'Care Items',
+        horizontal: true,
+        className: 'w-full my-8',
+        actions: [
+          {
+            label: 'Book a Free Consultation',
+            href: '/contact',
+            icon: ''
+          }
+        ]
       }
     },
     // Features Grid Component

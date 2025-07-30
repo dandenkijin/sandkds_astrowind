@@ -29,9 +29,9 @@
       component: ContentCard,
       showOnPages: ['page1'],
       props: {
-        title: 'Personalized Birth Support',
+        title: 'Here to Assist You',
         content: `
-          <p>As your birth doula, I provide continuous physical, emotional, and informational support before, during, and after childbirth. My services include:</p>
+          <p>Our team of experienced doulas provides continuous physical, emotional, and informational support before, during, and after childbirth. Our services include:</p>
           <ul class="list-disc pl-5 mt-2 space-y-1">
             <li>2-3 prenatal visits to discuss your birth preferences</li>
             <li>24/7 on-call support from 38-42 weeks</li>
@@ -98,7 +98,6 @@
   description={pageData.description}
   heroImage={pageData.heroImage}
   ctaText={pageData.ctaText}
-  ctaLink={pageData.ctaLink}
   widgets={pageWidgets} 
   pageId={pageData.pageId} 
 />

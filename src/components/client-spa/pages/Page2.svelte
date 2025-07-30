@@ -1,6 +1,11 @@
 <script>
-  import BasePage from './BasePage.svelte';
-  import { FeaturesGrid, CallToAction } from '../../flowbite';
+  // import BasePage from './BasePage.svelte';
+  import CallToAction from '../../flowbite/CallToAction.svelte';
+  import PageTemplate from '../PageTemplate.svelte';
+  import FeaturesGrid from '../../flowbite/FeaturesGrid.svelte';
+  import ContentCard from '../../flowbite/ContentCard.svelte';
+  // Import the image using Astro's asset handling
+  import cardImage from '/src/assets/images/postpartum_scene_breakfast_mom_doula_dad.png';
   
   // Page 2 specific data
   const pageData = {
@@ -15,40 +20,77 @@
   
   // Page 2 specific widgets
   const pageWidgets = [
+    // Content Card Component
+    {
+      id: 'content-card',
+      component: ContentCard,
+      showOnPages: ['page2'],
+      props: {
+        title: 'Nurturing Your Fourth Trimester, Embracing Your Family',
+        content: `
+          <p>Imagine waking up to a nourishing breakfast, knowing you have the support you need to care for your newborn. Our postpartum doulas provide hands-on assistance with:</p>
+          <ul class="list-disc pl-5 mt-2 space-y-1">
+            <li>Newborn care guidance and support</li>
+            <li>Light housekeeping and meal preparation</li>
+            <li>Emotional and physical recovery support</li>
+            <li>Breastfeeding and infant feeding assistance</li>
+            <li>Sibling and family adjustment support</li>
+          </ul>
+          <p class="mt-4">With our support, you can focus on bonding with your baby and recovering from birth with confidence.</p>
+        `,
+        image: cardImage,
+        imageAlt: 'Postpartum doula supporting new parents with breakfast',
+        horizontal: true,
+        className: 'w-full my-8',
+        actions: [
+          {
+            label: 'Learn More About Our Postpartum Services',
+            href: '/services/postpartum',
+            variant: 'primary',
+            size: 'lg'
+          }
+        ]
+      }
+    },
     // Content Section (using FeaturesGrid with a single item)
     {
       id: 'page2-content',
-      component: FeaturesGrid,
+      component: FeaturesGrid.default || FeaturesGrid,
       showOnPages: ['page2'],
       props: {
         title: 'Postpartum Support for New Families',
+        tagline: 'Compassionate Care When You Need It Most',
         description: 'The first weeks and months with a new baby are precious but can also be overwhelming. Our postpartum doulas provide the support you need to recover, rest, and bond with your baby.',
         items: [
           {
-            title: 'Postpartum Support',
-            description: 'The first weeks and months with a new baby are precious but can also be overwhelming. Our postpartum doulas provide the support you need to recover, rest, and bond with your baby.',
-            icon: 'HeartSolid',
-            ctaText: 'Learn More About Postpartum Support',
-            ctaLink: '/services/postpartum'
+            title: 'Overnight Support',
+            description: 'Get the rest you need while we care for your newborn through the night, helping establish healthy sleep patterns.',
+            icon: 'tabler:moon-stars'
+          },
+          {
+            title: 'Daytime Care',
+            description: 'Daytime support with newborn care, light housekeeping, meal prep, and emotional support.',
+            icon: 'tabler:sun'
+          },
+          {
+            title: 'Feeding Support',
+            description: 'Expert guidance with breastfeeding, bottle feeding, or combination feeding.',
+            icon: 'tabler:glass-full'
           }
         ],
-        columns: 1,
-        align: 'left',
-        image: {
-          src: '/images/placeholders/postpartum-care.jpg',
-          alt: 'Postpartum support',
-          position: 'right'
-        }
+        columns: 3,
       }
     },
-    // Features Section
+    // Features Section - matching Page1's features grid
     {
-      id: 'postpartum-features',
-      component: FeaturesGrid,
+      id: 'features-grid', // Using the same ID as Page1 for consistent handling
+      component: FeaturesGrid.default || FeaturesGrid,
       showOnPages: ['page2'],
       props: {
-        title: 'Our Postpartum Services Include',
-        description: 'Personalized support during the fourth trimester',
+        title: 'Our Postpartum Services',
+        subtitle: 'Comprehensive support for your fourth trimester journey',
+        tagline: 'What We Offer',
+        columns: 3,
         items: [
           {
             title: 'Newborn Care',
@@ -71,7 +113,6 @@
             icon: 'HandHoldingHeart'
           }
         ],
-        columns: 2
       }
     },
     // Call to Action
@@ -97,4 +138,11 @@
   ];
 </script>
 
-<BasePage {pageData} {pageWidgets} />
+<PageTemplate 
+  title={pageData.title}
+  description={pageData.description}
+  heroImage={pageData.heroImage}
+  ctaText={pageData.ctaText}
+  widgets={pageWidgets} 
+  pageId={pageData.pageId} 
+/>

@@ -35,8 +35,8 @@
   }[columns] || 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
 </script>
 
-<div class={`w-full bg-white dark:bg-slate-900 text-gray-900 dark:text-white ${containerClass}`}>
-  <div class="w-full max-w-7xl mx-auto px-4 py-12">
+<div class={`w-full ${containerClass}`}>
+  <div class="w-full">
   {#if tagline}
     <p class="text-center text-primary-600 dark:text-primary-400 text-lg font-semibold mb-2">
       {tagline}
@@ -65,9 +65,10 @@
     </div>
   {/if}
   
-  <div class={`grid ${gridCols} gap-6 w-full`}>
+  <div class="w-full">
+    <div class={`grid ${gridCols} gap-8 w-full`}>
     {#each items as item, i}
-      <Card class="h-full hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+      <Card class="h-full w-full hover:shadow-lg transition-shadow duration-300 overflow-hidden">
         <div class="flex flex-col h-full">
           {#if item.image}
             <div class="h-40 overflow-hidden mb-4">
@@ -108,6 +109,7 @@
         </div>
       </Card>
     {/each}
+    </div>
   </div>
 </div>
 </div>

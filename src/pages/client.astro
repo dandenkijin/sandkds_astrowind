@@ -3,6 +3,7 @@
 import Layout from '~/layouts/PageLayout.astro';
 import Hero from '~/components/widgets/Hero.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
+import Testimonials from '~/components/widgets/Testimonials.astro';
 // import Features2 from '~/components/widgets/Features2.astro';
 import Features from '~/components/widgets/Features.astro';
 // import Stats from '~/components/widgets/Stats.astro';
@@ -68,42 +69,53 @@ const metadata = {
 
   <Features
     id="features"
-    title="Main features of our templates"
-    subtitle="Possess several key characteristics to effectively cater to the needs of startups and entrepreneurs."
+    title="Why Choose Our Doula Service"
+    subtitle="Experience the difference with our compassionate and professional doula care, designed to support you through every step of your journey."
     columns={3}
     items={[
       {
-        title: 'Modern and Professional Design',
+        title: 'Personalized Birth Support',
         description:
-          'Have a contemporary design that reflects current design trends and gives a professional impression.',
-        icon: 'tabler:artboard',
+          'Tailored care plans that respect your birth preferences and provide continuous physical and emotional support throughout labor and delivery.',
+        icon: 'tabler:heart',
       },
       {
-        title: 'Responsive and Mobile-Friendly',
-        description: 'Adapt seamlessly to different screen sizes and devices to ensure a consistent experience.',
+        title: 'Evidence-Based Care',
+        description: 'Our doulas are trained in the latest research and best practices to ensure you receive the best possible care.',
         icon: 'tabler:picture-in-picture',
       },
       {
-        title: 'Customizability',
+        title: 'Continuous Support',
         description:
-          'Easily customizable, allowing users to adapt the design, colors, typography, and content to match their brand identity.',
-        icon: 'tabler:adjustments-horizontal',
+          'Our doulas provide continuous support throughout your labor, delivery, and postpartum period, ensuring you feel safe and supported every step of the way.',
+        icon: 'tabler:clock',
       },
       {
-        title: 'Fast Loading Times',
-        description: 'Optimized for speed to ensure a smooth user experience and favorable search engine rankings.',
-        icon: 'tabler:rocket',
+        title: 'Postpartum Support',
+        description: 'Comprehensive postpartum care including breastfeeding support, newborn care education, and emotional support during the fourth trimester.',
+        icon: 'tabler:baby-carriage',
       },
       {
-        title: 'Search Engine Optimization (SEO)',
-        description:
-          'Incorporate SEO best practices in template structure and code to improve visibility in search engine results.',
-        icon: 'tabler:arrows-right-left',
+        title: 'Partner & Family Inclusion',
+        description: 'We value and support the entire family unit, offering guidance on how partners and family members can be effectively involved in the birthing process.',
+        icon: 'tabler:users',
       },
       {
-        title: 'Compatibility',
-        description: 'The templates work seamlessly across various content management systems and website builders.',
-        icon: 'tabler:plug-connected',
+        title: '24/7 Availability',
+        description: 'Round-the-clock support as your due date approaches and throughout your labor and delivery process.',
+        icon: 'tabler:phone-call',
+      },
+    ]}
+  />
+
+  <!-- Testimonials Widget *********** -->
+  <Testimonials
+    testimonials={[
+      {
+        title: 'Invaluable Support',
+        testimonial: 'Snugs & Kisses made us feel so prepared and cared for. Their support was invaluable during such an important time in our lives. We truly felt seen and heard.',
+        name: 'The Miller Family',
+        job: 'Dallas, TX',
       },
     ]}
   />
@@ -115,17 +127,15 @@ const metadata = {
       {
         variant: 'primary',
         target: '_blank',
-        text: 'Get templates',
-        href: 'https://github.com/onwidget/astrowind',
-        icon: 'tabler:download',
+        text: 'Schedule a Consultation',
+        href: '#',
       },
     ]}
   >
-    <Fragment slot="title">Be a part of our vision</Fragment>
+    <Fragment slot="title">Ready to feel Supported and Empowered?</Fragment>
 
     <Fragment slot="subtitle">
-      Discover a dynamic work environment, unparalleled growth opportunities, and the chance to make a meaningful
-      impact.
+      Let's discuss how Snugs & Kisses can be a part of your beautiful journey. Schedule your complimentary consultation today.
     </Fragment>
   </CallToAction>
 </Layout>

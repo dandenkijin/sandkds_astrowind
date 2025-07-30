@@ -21,7 +21,7 @@
   export let pageId = '';
   export let heroImage: string | { src: string } = ''; // Can be a URL string or an imported image object
   export let imageUrl = ''; // Kept for backward compatibility
-  export let image = null; // Can be a URL string or an imported image object
+  // export let image = null; // Can be a URL string or an imported image object
   
   // Track mounted state for animations
   let isMounted = false;
@@ -155,35 +155,33 @@
   {#if filteredWidgets && filteredWidgets.length > 0}
     <div class="mt-16 w-full">
       {#each filteredWidgets as widget}
-        {#if widget.id === 'features-grid'}
-          <!-- Special handling for FeaturesGrid -->
-          <div class="w-full">
+        {#if String(widget.component?.name || '').includes('FeaturesGrid') || 
+            String((widget.component as any)?.default?.name || '').includes('FeaturesGrid')}
+          <!-- Full width for all FeaturesGrid components -->
+          <div class="w-full mb-12">
+            <svelte:component
+              this={widget.component}
+              {...widget.props}
+            />
+          </div>
+        {:else if widget.id === 'content-card'}
+          <!-- Full width for content card -->
+          <div class="w-full mb-12">
             <svelte:component
               this={widget.component}
               {...widget.props}
             />
           </div>
         {:else}
-          <!-- Default widget rendering -->
-          {#if widget.id === 'content-card'}
-            <!-- Full width for content card -->
-            <div class="w-full">
+          <!-- Default grid layout for other widgets -->
+          <div class="w-full mb-12">
+            <div class="grid grid-cols-1 gap-8 w-full">
               <svelte:component
                 this={widget.component}
                 {...widget.props}
               />
             </div>
-          {:else}
-            <!-- Grid layout for other widgets -->
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 w-full">
-              <div class="widget-item">
-                <svelte:component
-                  this={widget.component}
-                  {...widget.props}
-                />
-              </div>
-            </div>
-          {/if}
+          </div>
         {/if}
       {/each}
       <div class="mt-4 text-center">

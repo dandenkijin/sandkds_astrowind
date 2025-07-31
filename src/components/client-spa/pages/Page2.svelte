@@ -2,8 +2,9 @@
   // import BasePage from './BasePage.svelte';
   import CallToAction from '../../flowbite/CallToAction.svelte';
   import PageTemplate from '../PageTemplate.svelte';
-  import FeaturesGrid from '../../flowbite/FeaturesGrid.svelte';
+  import FeaturesGrid from '../../flowbite/FeaturesGrid.svelte'; // Using FeaturesGrid from Flowbite
   import ContentCard from '../../flowbite/ContentCard.svelte';
+  import Features from '../../flowbite/Features.svelte';
   // Import the image using Astro's asset handling
   import cardImage from '/src/assets/images/postpartum_scene_breakfast_mom_doula_dad.png';
   
@@ -52,33 +53,113 @@
         ]
       }
     },
-    // Content Section (using FeaturesGrid with a single item)
+    // Postpartum Support Features
     {
-      id: 'page2-content',
-      component: FeaturesGrid.default || FeaturesGrid,
+      id: 'postpartum-support-features',
+      component: Features.default || Features,
       showOnPages: ['page2'],
       props: {
-        title: 'Postpartum Support for New Families',
-        tagline: 'Compassionate Care When You Need It Most',
-        description: 'The first weeks and months with a new baby are precious but can also be overwhelming. Our postpartum doulas provide the support you need to recover, rest, and bond with your baby.',
+        title: 'Comprehensive Postpartum Support',
+        tagline: 'Our Services Include',
+        subtitle: 'We provide a wide range of services to support you through your postpartum journey',
+        columns: 3,
         items: [
           {
-            title: 'Overnight Support',
-            description: 'Get the rest you need while we care for your newborn through the night, helping establish healthy sleep patterns.',
-            icon: 'tabler:moon-stars'
+            title: 'Support As You Process Your Birth Story',
+            description: 'A safe space to share and process your birth experience',
+            icon: 'tabler:message-circle-2'
           },
           {
-            title: 'Daytime Care',
-            description: 'Daytime support with newborn care, light housekeeping, meal prep, and emotional support.',
-            icon: 'tabler:sun'
+            title: 'Postpartum Meal Prep',
+            description: 'Nutrition-focused meal preparation to support your recovery',
+            icon: 'tabler:cooker'
           },
           {
-            title: 'Feeding Support',
-            description: 'Expert guidance with breastfeeding, bottle feeding, or combination feeding.',
-            icon: 'tabler:glass-full'
+            title: 'Postpartum Recovery Tips/Tools',
+            description: 'Essential guidance for physical recovery after birth',
+            icon: 'tabler:heart-rate-monitor'
+          },
+          {
+            title: 'Baby Bonding',
+            description: 'Support in developing a strong bond with your newborn',
+            icon: 'tabler:heart-handshake'
+          },
+          {
+            title: 'Infant Feeding Support',
+            description: 'Expert assistance with breastfeeding, pumping, and bottle feeding',
+            icon: 'tabler:baby-bottle'
+          },
+          {
+            title: 'Newborn Care',
+            description: 'Guidance on swaddling, soothing, and general newborn care',
+            icon: 'tabler:baby-carriage'
+          },
+          {
+            title: 'Help with Establishing Routines',
+            description: 'Creating sustainable daily routines for your family',
+            icon: 'tabler:clock'
+          },
+          {
+            title: 'Diapering',
+            description: 'Expert guidance on diapering, including cloth options',
+            icon: 'tabler:diaper'
+          },
+          {
+            title: 'Umbilical Cord Care',
+            description: 'Proper care and hygiene for your newborn\'s umbilical cord',
+            icon: 'tabler:cross'
+          },
+          {
+            title: 'Circumcision Care',
+            description: 'Gentle care instructions for circumcision healing',
+            icon: 'tabler:bandage'
+          },
+          {
+            title: 'Bathing',
+            description: 'Safe and comfortable bathing techniques for your baby',
+            icon: 'tabler:droplet'
+          },
+          {
+            title: 'Milestones/Development Guidance',
+            description: 'Understanding and supporting your baby\'s development',
+            icon: 'tabler:chart-dots'
+          },
+          {
+            title: 'Safe Sleep Practices',
+            description: 'Education on co-sleeping, bed sharing, and safe sleep',
+            icon: 'tabler:moon'
+          },
+          {
+            title: 'Car Seat Safety Basics',
+            description: 'Proper installation and use of car seats',
+            icon: 'tabler:car'
+          },
+          {
+            title: 'Returning to Work Transition',
+            description: 'Support for the transition back to work',
+            icon: 'tabler:briefcase'
+          },
+          {
+            title: 'Errands',
+            description: 'Assistance with errands and household tasks',
+            icon: 'tabler:shopping-cart'
+          },
+          {
+            title: 'Emotional Support',
+            description: 'Watch and support for PMADs (Perinatal Mood and Anxiety Disorders)',
+            icon: 'tabler:heart'
+          },
+          {
+            title: 'Light Housekeeping',
+            description: 'Help with light cleaning and nursery organization',
+            icon: 'tabler:home'
+          },
+          {
+            title: 'Referrals and Resources',
+            description: 'Connections to additional support services and resources',
+            icon: 'tabler:link'
           }
-        ],
-        columns: 3,
+        ]
       }
     },
     // Features Section - matching Page1's features grid

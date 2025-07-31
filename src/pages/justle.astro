@@ -1,0 +1,56 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import FormsSPA from '~/components/justle-spa/FormsSPA.svelte';
+
+const metadata = {
+  title: 'Justle - Contact Us',
+  description: 'Get in touch with us for any questions or support. We\'re here to help!',
+};
+---
+
+<Layout metadata={metadata}>
+  <main class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <section class="bg-white pb-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <HeroText tagline="Contact" title="Let's Connect!" />
+      </div>
+    </section>
+
+    <!-- Form Section -->
+    <section aria-labelledby="form-heading" class="py-12 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-sm p-6 md:p-8">
+          <h2 id="form-heading" class="sr-only">Contact Form</h2>
+          <div class="w-full">
+            <FormsSPA client:load />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-16 bg-gradient-to-b from-white to-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <CallToAction
+          title="Need more help?"
+          subtitle="Our team is ready to assist you with any questions or concerns."
+          actions={[
+            {
+              text: 'Email Us',
+              href: 'mailto:contact@example.com',
+              type: 'button',
+            },
+            {
+              text: 'Call Us',
+              href: 'tel:+1234567890',
+              type: 'button',
+            }
+          ]}
+        />
+      </div>
+    </section>
+  </main>
+</Layout>

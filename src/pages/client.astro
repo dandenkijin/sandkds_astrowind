@@ -4,16 +4,9 @@ import Layout from '~/layouts/PageLayout.astro';
 import Hero from '~/components/widgets/Hero.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import Testimonials from '~/components/widgets/Testimonials.astro';
-// import Features2 from '~/components/widgets/Features2.astro';
 import Features from '~/components/widgets/Features.astro';
-// import Stats from '~/components/widgets/Stats.astro';
-// import Features3 from '~/components/widgets/Features3.astro';
-// import FAQs from '~/components/widgets/FAQs.astro';
-// Import Svelte components with explicit .svelte extension
+// astro island, svelte component
 import ClientSPA from '../components/client-spa/ClientSPA.svelte';
-// import TestSvelte from '../components/TestSvelte.svelte';
-
-//import { YouTube } from 'astro-embed';
 
 const metadata = {
   title: 'Family Support Services',
@@ -43,9 +36,6 @@ const metadata = {
     <Fragment slot="subtitle">
       At Snugs & Kisses, we believe every family deserves to feel cherished, supported, and confident. Our expert doulas, lactation consultants, and newborn care specialists provide gentle, nonjudgmental care tailored to your unique needs.
     </Fragment>
-    
-
-
     {/* <Fragment slot="image">
       <YouTube id="u792CxDT7cE" title=" The Essential Ingredient: Doula " />
       <style is:inline>

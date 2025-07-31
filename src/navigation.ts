@@ -10,6 +10,10 @@ export const headerData = {
       text: 'Corporate',
       href: getPermalink('/corporate'),
     },
+    {
+      text: 'Justle Test',
+      href: getPermalink('/justle'),
+    },
     // {
     //   text: 'Homes',
     //   links: [

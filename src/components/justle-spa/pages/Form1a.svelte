@@ -70,14 +70,14 @@
   });
 </script>
 
-<div id="form-container" style="width: 100%; min-width: 100%; max-width: 100%; margin: 0; padding: 0; box-sizing: border-box;">
+<div id="form-container" class="w-full max-w-full overflow-hidden">
   {#if error}
     <div class="error-message">
       <p>{error}</p>
       <button class="retry-button" on:click={() => window.location.reload()}>Try Again</button>
     </div>
   {:else}
-    <div class="form-iframe-container" style="position: relative; width: 100%; min-width: 100%; max-width: 100%; margin: 0; padding: 0; box-sizing: border-box;">
+    <div class="form-iframe-container w-full h-[600px] md:h-[800px]">
       {#if isLoading}
         <div class="loading-overlay">
           <div class="loading-spinner"></div>
@@ -93,7 +93,7 @@
         src={FORM_URL}
         on:load={handleIframeLoad}
         on:error={handleIframeError}
-        style={`width: 100%; min-width: 100%; max-width: 100%; height: 100%; min-height: 600px; border: none; margin: 0; padding: 0; box-sizing: border-box; ${isLoading ? 'opacity: 0;' : 'opacity: 1;'}`}
+        class="w-full h-full border-0 {isLoading ? 'opacity-0' : 'opacity-100'}"
         loading="lazy"
       ></iframe>
     </div>
@@ -101,18 +101,20 @@
 </div>
 
 <style>
-  .form-container {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: none !important;
-    display: block;
-    min-height: 500px;
-    position: relative;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  #form-container {
+    background-color: var(--color-bg-base, #ffffff);
+    color: var(--color-text-base, #1a202c);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  
+
+  .form-iframe-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--color-bg-base, #ffffff);
+    border-radius: 0.5rem;
+  }
+
   .loading-overlay {
     position: absolute;
     top: 0;
@@ -123,14 +125,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(var(--color-bg-base-rgb, 255, 255, 255), 0.9);
+    color: var(--color-text-base, #1a202c);
     z-index: 10;
   }
   
   .loading-spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
+    border: 4px solid var(--color-border-muted, #e2e8f0);
     border-radius: 50%;
-    border-top: 4px solid #4f46e5;
+    border-top: 4px solid var(--color-primary, #4299e1);
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
@@ -152,17 +155,19 @@
     padding: 0 !important;
     display: block;
     border: none !important;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, height 0.3s ease;
     box-sizing: border-box;
+    background-color: var(--color-bg-base, #ffffff);
+    color-scheme: light dark;
   }
   
   .error-message {
     text-align: center;
     padding: 2rem;
-    background: #fff5f5;
-    border: 1px solid #feb2b2;
+    background: var(--color-bg-muted, #fff5f5);
+    border: 1px solid var(--color-error-border, #feb2b2);
     border-radius: 0.5rem;
-    color: #c53030;
+    color: var(--color-error-text, #c53030);
     margin: 1rem auto;
     max-width: 90%;
   }
@@ -170,7 +175,7 @@
   .retry-button {
     margin-top: 1rem;
     padding: 0.5rem 1rem;
-    background: #4f46e5;
+    background: var(--color-primary, #4f46e5);
     color: white;
     border: none;
     border-radius: 0.375rem;
@@ -179,6 +184,15 @@
   }
   
   .retry-button:hover {
-    background: #4338ca;
+    background: var(--color-primary-dark, #4338ca);
+  }
+
+  /* Dark mode specific styles */
+  @media (prefers-color-scheme: dark) {
+    :global(html.dark) {
+      --color-error-border: #f56565;
+      --color-error-text: #fed7d7;
+      --color-bg-muted: #2d3748;
+    }
   }
 </style>

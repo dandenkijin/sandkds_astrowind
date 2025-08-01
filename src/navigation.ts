@@ -123,7 +123,7 @@ export const headerData = {
        ],
     },
   ],
-  actions: [{ text: 'Download', href: 'https://github.com/onwidget/astrowind', target: '_blank' }],
+  actions: [{ text: 'Contact Us', href: getPermalink('/justle') }],
 };
 
 export const footerData = {

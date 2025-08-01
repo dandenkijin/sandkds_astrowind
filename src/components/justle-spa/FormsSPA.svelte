@@ -53,10 +53,13 @@
 </script>
 
 <main class="forms-container">
-  <nav class="forms-nav">
+  <nav class="flex gap-3 mb-8 flex-wrap border-b border-border-muted pb-4">
     {#each forms as form}
       <button
-        class:active={currentForm === form.id}
+        class="px-6 py-2 rounded-3xl text-sm transition-all duration-200 border border-gray-400
+          {currentForm === form.id 
+            ? 'bg-primary text-white border-primary hover:bg-secondary hover:border-secondary dark:bg-primary dark:text-white dark:border-primary' 
+            : 'bg-transparent text-text-base hover:bg-gray-100 hover:text-gray-900 hover:border-gray-600 dark:text-slate-300 dark:border-slate-500 dark:hover:bg-slate-800 dark:hover:border-slate-800'}"
         on:click={() => navigateToForm(form.id)}
         aria-current={currentForm === form.id ? 'page' : undefined}
       >
@@ -71,6 +74,12 @@
 </main>
 
 <style>
+  :global(body) {
+    background-color: var(--color-bg-base, #ffffff);
+    color: var(--color-text-base, #1a202c);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
   .forms-container {
     width: 100%;
     max-width: 1200px;
@@ -78,43 +87,10 @@
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    min-height: 100%;
-  }
-
-  .forms-nav {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 1rem;
-  }
-
-  .forms-nav button {
-    padding: 0.5rem 1rem;
-    background: none;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.875rem;
-    color: #4a5568;
-  }
-
-  .forms-nav button:hover {
-    background-color: #f7fafc;
-    border-color: #cbd5e0;
-  }
-
-  .forms-nav button.active {
-    background-color: #4299e1;
-    color: white;
-    border-color: #3182ce;
-  }
-
-  .forms-nav button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    min-height: 100vh;
+    background-color: var(--color-bg-base, #ffffff);
+    color: var(--color-text-base, #1a202c);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .form-content {
@@ -125,14 +101,31 @@
     max-width: 100%;
     margin: 0;
     padding: 0;
+    background-color: var(--color-bg-base, #ffffff);
+    color: var(--color-text-base, #1a202c);
+  }
+
+  /* Dark mode styles */
+  @media (prefers-color-scheme: dark) {
+    :global(html.dark) .form-content,
+    :global(html.dark) .forms-container {
+      --color-bg-base: #1a202c;
+      --color-text-base: #e2e8f0;
+      --color-border-muted: #2d3748;
+      --color-bg-muted: #2d3748;
+      --color-border-base: #4a5568;
+      --color-primary: #63b3ed;
+      --color-primary-dark: #4299e1;
+      --color-primary-opacity: rgba(99, 179, 237, 0.5);
+    }
   }
 
   @media (max-width: 768px) {
-    .forms-nav {
+    nav {
       flex-direction: column;
     }
     
-    .forms-nav button {
+    nav button {
       width: 100%;
       text-align: left;
     }

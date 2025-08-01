@@ -1,9 +1,108 @@
 [build]
   publish = "dist"
   command = "npm run build"
+
 [build.processing.html]
   pretty_urls = false
+
+# Environment variables
+[build.environment]
+  NETLIFY_USE_PNPM = "true"
+  GATSBY_TELEMETRY_DISABLED = "1"
+  NODE_VERSION = "18"
+
+# Handle admin routes - must come before SPA redirect
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/"
+  status = 200
+  force = true
+
+# Handle Netlify Identity
+# Note: These redirects are handled automatically by Netlify, no need to specify them
+
+# Serve config.yml from static/admin
+[[redirects]]
+  from = "/admin/config.yml"
+  to = "/admin/config.yml"
+  status = 200
+  force = true
+
+# Serve node_modules in development
+[[redirects]]
+  from = "/node_modules/*"
+  to = "/node_modules/:splat"
+  status = 200
+  force = true
+
+# Handle SPA routing - must be last
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security headers for admin
+# Admin page headers
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://identity.netlify.com; style-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https://api.netlify.com https://api.github.com https://identity.netlify.com http://localhost:* ws://localhost:*; form-action 'self' https://identity.netlify.com; base-uri 'self'; worker-src 'self' blob:;"
+    Feature-Policy = "camera 'none'; microphone 'none'; geolocation 'none';"
+
+# Test page - minimal headers for debugging
+[[headers]]
+  for = "/admin-test.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+    
+# Make sure the test page is served with the correct MIME type
+[[redirects]]
+  from = "/admin-test.html"
+  to = "/admin-test.html"
+  status = 200
+  force = true
+
+# Global headers - exclude test page
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;"
+    Feature-Policy = "camera 'none'; microphone 'none'; geolocation 'none';"
+
+# Explicitly exclude test page from global headers
+[[headers]]
+  for = "/admin-test.html"
+  [headers.values]
+    X-Content-Type-Options = ""
+    X-Frame-Options = ""
+    X-XSS-Protection = ""
+    Referrer-Policy = ""
+    Content-Security-Policy = ""
+    Feature-Policy = ""
+
+# Cache control for static assets
 [[headers]]
   for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Handle static files
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Allow Netlify Identity to work
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"

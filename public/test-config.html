@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Config Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script>
+    async function testConfig() {
+      try {
+        const response = await fetch('/admin/config.yml');
+        if (!response.ok) {
+          throw new Error(`Failed to load config: ${response.status}`);
+        }
+        const yaml = await response.text();
+        const config = jsyaml.load(yaml);
+        document.getElementById('result').innerHTML = 
+          `<pre>${JSON.stringify(config, null, 2)}</pre>`;
+      } catch (error) {
+        document.getElementById('result').innerHTML = 
+          `<div style="color: red">Error: ${error.message}</div>`;
+        console.error('Config test failed:', error);
+      }
+    }
+  </script>
+</head>
+<body onload="testConfig()">
+  <h1>Config Test</h1>
+  <div id="result">Loading config...</div>
+</body>
+</html>

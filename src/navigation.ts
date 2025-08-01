@@ -3,12 +3,44 @@ import { getPermalink, getAsset } from './utils/permalinks';
 export const headerData = {
   links: [
     {
+      text: 'Home',
+      href: getPermalink('/'),
+    },
+    {
       text: 'Family Services',
       href: getPermalink('/client'),
+      children: [
+        {
+          text: 'Childcare',
+          href: getPermalink('/family/childcare'),
+        },
+        {
+          text: 'Elderly Care',
+          href: getPermalink('/family/elderly-care'),
+        },
+        {
+          text: 'Pet Care',
+          href: getPermalink('/family/pet-care'),
+        },
+      ],
     },
     {
       text: 'Corporate',
       href: getPermalink('/corporate'),
+      children: [
+        {
+          text: 'Employee Benefits',
+          href: getPermalink('/corporate/benefits'),
+        },
+        {
+          text: 'Enterprise Solutions',
+          href: getPermalink('/corporate/solutions'),
+        },
+        {
+          text: 'Contact Sales',
+          href: getPermalink('/corporate/contact-sales'),
+        },
+      ],
     },
     // {
     //   text: 'Justle Test',

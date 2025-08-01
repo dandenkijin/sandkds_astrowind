@@ -16,26 +16,31 @@ const metadata = {
 <Layout metadata={metadata}>
   <!-- Hero Widget ******************* -->
 
-  <Hero
-    tagline="Family Support Services"
-    actions={[
-      {
-        variant: 'primary',
-        target: '_blank',
-        text: `Let's Get Started`,
-        href: '#',
-        icon: 'tabler:download',
-      },
-      { text: 'Learn more', href: '#features' },
-    ]}
-  >
-    <Fragment slot="title">
-      Your Journey, Safely Supported Every Step
-    </Fragment>
+  <div class="relative">
+    <div 
+      class="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-pink-100/80 via-pink-100/40 to-transparent dark:from-pink-900/20 dark:via-pink-900/10 dark:to-transparent" 
+      aria-hidden="true"
+    ></div>
+    <Hero
+      tagline="Family Support Services"
+      actions={[
+        {
+          variant: 'primary',
+          target: '_blank',
+          text: `Let's Get Started`,
+          href: '#',
+          icon: 'tabler:download',
+        },
+        { text: 'Learn more', href: '#features' },
+      ]}
+    >
+      <Fragment slot="title">
+        Your Journey, Safely Supported Every Step
+      </Fragment>
 
-    <Fragment slot="subtitle">
-      At Snugs & Kisses, we believe every family deserves to feel cherished, supported, and confident. Our expert doulas, lactation consultants, and newborn care specialists provide gentle, nonjudgmental care tailored to your unique needs.
-    </Fragment>
+      <Fragment slot="subtitle">
+        At Snugs & Kisses, we believe every family deserves to feel cherished, supported, and confident. Our expert doulas, lactation consultants, and newborn care specialists provide gentle, nonjudgmental care tailored to your unique needs.
+      </Fragment>
     {/* <Fragment slot="image">
       <YouTube id="u792CxDT7cE" title=" The Essential Ingredient: Doula " />
       <style is:inline>

@@ -81,7 +81,7 @@
       <button class="retry-button" on:click={handleRetry}>Try Again</button>
     </div>
   {:else}
-    <div class="form-iframe-container w-full h-[600px] md:h-[800px]">
+    <div class="form-iframe-container h-[600px] md:h-[800px] w-full">
       {#if isLoading}
         <div class="loading-overlay">
           <div class="loading-spinner"></div>
@@ -98,7 +98,7 @@
         on:load={handleIframeLoad}
         on:error={handleIframeError}
         class="w-full h-full border-0 {isLoading ? 'opacity-0' : 'opacity-100'}"
-        loading="lazy"
+        loading="eager"
       ></iframe>
     </div>
   {/if}
@@ -106,16 +106,16 @@
 
 <style>
   #form-container {
-    background-color: var(--color-bg-base, #ffffff);
+    background-color: var(--color-bg-muted, #f7fafc); /* Light gray background */
     color: var(--color-text-base, #1a202c);
     transition: background-color 0.3s ease, color 0.3s ease;
+
   }
 
   .form-iframe-container {
     position: relative;
     width: 100%;
-    overflow: hidden;
-    background-color: var(--color-bg-base, #ffffff);
+    background-color: var(--color-bg-base, #a88e8e); /* White background for the form */
     border-radius: 0.5rem;
   }
   
@@ -154,7 +154,8 @@
     min-width: 100% !important;
     max-width: none !important;
     height: 100% !important;
-    min-height: 600px !important;
+    min-height: 100% !important;
+    max-height: none !important;
     margin: 0 !important;
     padding: 0 !important;
     display: block;
@@ -163,6 +164,11 @@
     box-sizing: border-box;
     background-color: var(--color-bg-base, #ffffff);
     color-scheme: light dark;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
   
   .error-message {

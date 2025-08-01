@@ -110,7 +110,6 @@
   .form-iframe-container {
     position: relative;
     width: 100%;
-    overflow: hidden;
     background-color: var(--color-bg-base, #ffffff);
     border-radius: 0.5rem;
   }

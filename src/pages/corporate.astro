@@ -44,10 +44,14 @@ const metadata = {
   </Fragment>
 
   <!-- Hero2 Widget ******************* -->
-
-  <Hero2
-    tagline="Partner With Us to Support Every Family, Fully"
-    actions={[
+  <div class="relative">
+    <div 
+      class="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-pink-100/80 via-pink-100/40 to-transparent dark:from-pink-900/20 dark:via-pink-900/10 dark:to-transparent" 
+      aria-hidden="true"
+    ></div>
+    <Hero2
+      tagline="Partner With Us to Support Every Family, Fully"
+      actions={[
       { variant: 'primary', target: '_blank', text: 'Get Started', href: 'https://github.com/onwidget/astrowind' },
       { text: 'Learn more', href: '#features' },
     ]}

@@ -53,7 +53,7 @@
 </script>
 
 <main class="forms-container">
-  <nav class="flex gap-3 mb-8 flex-wrap border-b border-border-muted pb-4">
+  <nav class="flex gap-3 mb-8 flex-wrap">
     {#each forms as form}
       <button
         class="px-6 py-2 rounded-3xl text-sm transition-all duration-200 border border-gray-400
@@ -67,8 +67,7 @@
       </button>
     {/each}
   </nav>
-
-  <div class="form-content" in:fade={{ duration: 200, easing: quintOut }}>
+  <div class="form-outer-container">
     <svelte:component this={currentFormData.component} />
   </div>
 </main>
@@ -85,24 +84,15 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    background-color: var(--color-bg-base, #ffffff);
-    color: var(--color-text-base, #1a202c);
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
-
-  .form-content {
-    flex: 1;
-    position: relative;
-    min-height: 0;
+  
+  /* This will push the form to the bottom */
+  :global(.form-outer-container) {
+    margin-top: auto;
     width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: var(--color-bg-base, #ffffff);
-    color: var(--color-text-base, #1a202c);
   }
 
   /* Dark mode styles */

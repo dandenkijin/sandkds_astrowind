@@ -180,7 +180,7 @@
     in:fade={{ duration: 400 }}
   >
     <div class="py-8">
-      <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent pb-4 leading-tight animate-slide-up">
+      <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-page pb-4 leading-tight animate-slide-up">
         {appTitle}
       </h1>
       <p class="font-serif text-lg md:text-xl text-slate-600 dark:text-slate-300 italic max-w-3xl mx-auto -mt-2">

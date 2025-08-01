@@ -16,7 +16,7 @@ import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin, lazyImagesRehype
 
 import svelte from '@astrojs/svelte';
 
-import tailwindcss from '@tailwindcss/vite';
+
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -77,6 +77,6 @@ export default defineConfig({
       },
     },
 
-    plugins: [tailwindcss()],
+    // Tailwind v3: use standard PostCSS pipeline or import CSS directly. No tailwindcss() plugin here.
   },
 });

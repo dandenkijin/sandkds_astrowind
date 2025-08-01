@@ -47,6 +47,100 @@ const { language, textDirection } = I18N;
   <body class="antialiased text-default bg-page tracking-tight">
     <slot />
 
+    <!-- Simple Spinner Overlay -->
+    <div id="page-spinner-overlay" class="fixed inset-0 z-[9999] bg-white/70 dark:bg-slate-900/70 backdrop-blur flex items-center justify-center hidden">
+      <div class="w-12 h-12 border-4 border-t-primary-500 border-r-primary-500 border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+    </div>
+    <script>
+      let spinnerTimeout;
+      const SPINNER_TIMEOUT_MS = 4000; // 4 second timeout
+
+      // Ensure spinner is hidden by default on initial load
+      document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('page-spinner-overlay');
+        if (overlay) overlay.classList.add('hidden');
+      });
+
+      function showSpinner() {
+        const overlay = document.getElementById('page-spinner-overlay');
+        if (overlay) {
+          // Clear any existing timeout
+          if (spinnerTimeout) clearTimeout(spinnerTimeout);
+          // Set new timeout to hide spinner after 4 seconds
+          spinnerTimeout = setTimeout(() => {
+            // Check if we're on a hash URL and the target exists
+            if (window.location.hash) {
+              const target = document.querySelector(window.location.hash);
+              if (target) {
+                // If target exists, ensure it's in view
+                target.scrollIntoView();
+                hideSpinner();
+                return;
+              }
+            }
+            // If no hash or target not found, hide spinner anyway
+            hideSpinner();
+          }, SPINNER_TIMEOUT_MS);
+          
+          overlay.classList.remove('hidden');
+        }
+      }
+
+      function hideSpinner() {
+        if (spinnerTimeout) clearTimeout(spinnerTimeout);
+        const overlay = document.getElementById('page-spinner-overlay');
+        if (overlay) overlay.classList.add('hidden');
+      }
+
+      function handlePageLoad() {
+        // Check for hash navigation
+        if (window.location.hash) {
+          const target = document.querySelector(window.location.hash);
+          if (target) {
+            target.scrollIntoView();
+          }
+        }
+        hideSpinner();
+      }
+
+      // Hide spinner when page is fully loaded
+      window.addEventListener('load', handlePageLoad);
+      document.addEventListener('astro:after-swap', handlePageLoad);
+      document.addEventListener('astro:page-load', handlePageLoad);
+
+      // Show spinner during navigation
+      if ('navigation' in window) {
+        // @ts-ignore
+        window.navigation.addEventListener('navigate', (event) => {
+          // Only show spinner for same-origin navigations
+          if (new URL(event.destination.url).origin === window.location.origin) {
+            showSpinner();
+          }
+        });
+        // @ts-ignore
+        window.navigation.addEventListener('navigatesuccess', handlePageLoad);
+        // @ts-ignore
+        window.navigation.addEventListener('navigateerror', hideSpinner);
+      } else {
+        window.addEventListener('popstate', showSpinner);
+        window.addEventListener('hashchange', handlePageLoad);
+        document.addEventListener('astro:page-load', handlePageLoad);
+      }
+
+      // Handle link clicks
+      document.body.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target && typeof target.closest === 'function') {
+          const a = target.closest('a');
+          if (a && a.href && a.origin === window.location.origin && !a.hasAttribute('target')) {
+            showSpinner();
+          }
+        }
+      });
+
+      // Initial hide
+      hideSpinner();
+    </script>
     <BasicScripts />
   </body>
 </html>

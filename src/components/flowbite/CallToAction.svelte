@@ -21,7 +21,7 @@
   $: backgroundClasses = {
     'default': 'bg-white dark:bg-gray-900',
     'gray': 'bg-gray-50 dark:bg-gray-800',
-    'gradient': 'bg-linear-to-r from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700',
+    'gradient': 'bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700',
     'dark': 'bg-gray-800 dark:bg-gray-900'
   }[background] || 'bg-white dark:bg-gray-900';
   

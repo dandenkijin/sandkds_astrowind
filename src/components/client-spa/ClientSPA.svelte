@@ -187,7 +187,7 @@
         {appSubtitle}
       </p>
     </div>
-    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-linear-to-r from-primary to-accent rounded-full"></div>
+    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-primary to-accent rounded-full"></div>
   </header>
   
   <!-- Service Cards Navigation -->
@@ -238,7 +238,7 @@
                 }}
               />
             {/if}
-            <div class="image-fallback absolute inset-0 flex items-center justify-center bg-linear-to-br from-slate-200 to-slate-300 dark:from-slate-600 dark:to-slate-700" style="display: {page.image ? 'none' : 'flex'};">
+            <div class="image-fallback absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-600 dark:to-slate-700" style="display: {page.image ? 'none' : 'flex'};">
               <div class="text-center p-4">
                 <TablerIcon name={page.icon} size={32} className="text-slate-400 dark:text-slate-500" />
               </div>

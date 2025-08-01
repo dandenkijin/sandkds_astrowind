@@ -39,7 +39,7 @@
       {/if}
     </div>
   {:else}
-    <div class="absolute inset-0 bg-linear-to-br from-primary-600 to-primary-800"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800"></div>
   {/if}
   
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center py-16 sm:py-24">

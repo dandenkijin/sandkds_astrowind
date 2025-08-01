@@ -226,7 +226,7 @@
     <div class="mt-8 sm:mt-12 text-center">
       <a 
         href={ctaLink} 
-        class="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-3.5 text-base sm:text-lg font-medium text-white dark:text-slate-900 bg-linear-to-r from-primary to-accent hover:from-primary-600 hover:to-accent-500 dark:from-primary-300 dark:to-accent-300 rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-slate-900"
+        class="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-3.5 text-base sm:text-lg font-medium text-white dark:text-slate-900 bg-gradient-to-r from-primary to-accent hover:from-primary-600 hover:to-accent-500 dark:from-primary-300 dark:to-accent-300 rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-slate-900"
       >
         {ctaText}
         <TablerIcon name="tabler:arrow-right" size={20} className="ml-2 -mr-1" />

@@ -16,7 +16,7 @@ const {
 } = Astro.props;
 ---
 
-<div class="w-full bg-linear-to-r from-pink-200 via-(--aw-color-tertiary) to-pink-200 py-16">
+<div class="w-full bg-gradient-to-r from-pink-200 via-[color:var(--aw-color-tertiary)] to-pink-200 py-16">
   <WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${classes?.container ?? ''}`}>
     <div class="text-white">
     <Headline 

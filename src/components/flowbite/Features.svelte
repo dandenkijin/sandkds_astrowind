@@ -58,7 +58,7 @@
       {#each items as item}
         <div class="flex">
           {#if item.icon || defaultIcon}
-            <div class="text-white bg-primary-600 rounded-full w-10 h-10 p-2 md:w-12 md:h-12 md:p-3 mr-4 rtl:ml-4 rtl:mr-0 flex-shrink-0">
+            <div class="text-white bg-primary-600 rounded-full w-10 h-10 p-2 md:w-12 md:h-12 md:p-3 mr-4 rtl:ml-4 rtl:mr-0 shrink-0">
               <Icon name={getIcon(item.icon)} className="w-full h-full" />
             </div>
           {/if}

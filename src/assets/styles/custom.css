@@ -1,6 +1,3 @@
-@tailwind base;
-@tailwind components;
-
 @layer utilities {
   .bg-page {
     background-color: var(--aw-color-bg-page);
@@ -135,6 +132,3 @@
 .dd *:first-child {
   margin-top: 0;
 }
-
-@tailwind utilities;
-

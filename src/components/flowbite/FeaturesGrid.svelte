@@ -95,7 +95,7 @@
               <h3 class="text-xl font-bold">{item.title}</h3>
             </div>
           
-          <p class="text-gray-600 dark:text-gray-300 flex-grow mb-4">
+          <p class="text-gray-600 dark:text-gray-300 grow mb-4">
             {item.description}
           </p>
           

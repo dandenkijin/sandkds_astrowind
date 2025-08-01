@@ -180,14 +180,14 @@
     in:fade={{ duration: 400 }}
   >
     <div class="py-8">
-      <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent pb-4 leading-tight animate-slide-up">
+      <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent pb-4 leading-tight animate-slide-up">
         {appTitle}
       </h1>
       <p class="font-serif text-lg md:text-xl text-slate-600 dark:text-slate-300 italic max-w-3xl mx-auto -mt-2">
         {appSubtitle}
       </p>
     </div>
-    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-linear-to-r from-primary to-accent rounded-full"></div>
   </header>
   
   <!-- Service Cards Navigation -->
@@ -238,7 +238,7 @@
                 }}
               />
             {/if}
-            <div class="image-fallback absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-600 dark:to-slate-700" style="display: {page.image ? 'none' : 'flex'};">
+            <div class="image-fallback absolute inset-0 flex items-center justify-center bg-linear-to-br from-slate-200 to-slate-300 dark:from-slate-600 dark:to-slate-700" style="display: {page.image ? 'none' : 'flex'};">
               <div class="text-center p-4">
                 <TablerIcon name={page.icon} size={32} className="text-slate-400 dark:text-slate-500" />
               </div>
@@ -247,10 +247,10 @@
         </div>
 
         <!-- Content Section -->
-        <div class="p-6 flex flex-col flex-grow">
+        <div class="p-6 flex flex-col grow">
           <div class="flex items-start mb-4">
             <div class={`
-              p-2 rounded-lg mr-3 transition-colors duration-200 flex-shrink-0
+              p-2 rounded-lg mr-3 transition-colors duration-200 shrink-0
               ${currentPage === page.id 
                 ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300' 
                 : 'bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20'}

@@ -85,8 +85,48 @@
   @apply rotate-45 translate-y-[-8px] translate-x-[14px];
 }
 
-/* To deprecated */
+/* Mobile Menu Styles */
+#mobile-menu {
+  transition: transform 0.3s ease-in-out;
+  will-change: transform;
+  z-index: 50;
+}
 
+#mobile-menu-overlay {
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  will-change: opacity, visibility;
+  z-index: 40;
+}
+
+/* Smooth transitions for menu items */
+#mobile-menu a,
+#mobile-menu button {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Ensure proper spacing and scrolling for mobile menu */
+#mobile-menu > div {
+  max-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improve touch targets for mobile */
+#mobile-menu a,
+#mobile-menu button {
+  padding: 0.75rem 1rem;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+/* Style the close button in mobile menu */
+#mobile-menu [data-aw-toggle-menu] {
+  padding: 0.5rem;
+  margin: -0.5rem -0.5rem -0.5rem auto;
+}
+
+/* To deprecated */
 .dd *:first-child {
   margin-top: 0;
 }

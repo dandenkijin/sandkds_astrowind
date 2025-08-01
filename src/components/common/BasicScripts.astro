@@ -54,14 +54,35 @@ import { UI } from 'astrowind:config';
       document.querySelector('#header > div > div:last-child')?.classList.add('hidden');
     });
 
+    // Toggle mobile menu
     attachEvent('[data-aw-toggle-menu]', 'click', function (_, elem) {
-      elem.classList.toggle('expanded');
-      document.body.classList.toggle('overflow-hidden');
-      document.getElementById('header')?.classList.toggle('h-screen');
-      document.getElementById('header')?.classList.toggle('expanded');
-      document.getElementById('header')?.classList.toggle('bg-page');
-      document.querySelector('#header nav')?.classList.toggle('hidden');
-      document.querySelector('#header > div > div:last-child')?.classList.toggle('hidden');
+      const isExpanded = elem.classList.toggle('expanded');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+      
+      if (isExpanded) {
+        // Open mobile menu
+        document.body.classList.add('overflow-hidden');
+        mobileMenuOverlay?.classList.remove('opacity-0', 'invisible');
+        mobileMenuOverlay?.classList.add('opacity-100', 'visible');
+        mobileMenu?.classList.remove('-translate-x-full');
+        mobileMenu?.classList.add('translate-x-0');
+      } else {
+        // Close mobile menu
+        document.body.classList.remove('overflow-hidden');
+        mobileMenuOverlay?.classList.remove('opacity-100', 'visible');
+        mobileMenuOverlay?.classList.add('opacity-0', 'invisible');
+        mobileMenu?.classList.remove('translate-x-0');
+        mobileMenu?.classList.add('-translate-x-full');
+      }
+    });
+    
+    // Close menu when clicking overlay
+    attachEvent('#mobile-menu-overlay', 'click', function() {
+      const elem = document.querySelector('[data-aw-toggle-menu]');
+      if (elem?.classList.contains('expanded')) {
+        elem.click(); // Trigger the click to close the menu
+      }
     });
 
     attachEvent('[data-aw-toggle-color-scheme]', 'click', function () {

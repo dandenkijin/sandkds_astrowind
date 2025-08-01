@@ -72,11 +72,92 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
       <div class="lg:hidden">
         <ToggleMenu />
       </div>
+      
+      {/* Mobile Menu Overlay */}
+      <div class="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 opacity-0 invisible" id="mobile-menu-overlay"></div>
+      
+      {/* Mobile Menu */}
+      <div class="lg:hidden fixed inset-y-0 right-0 z-50 w-full max-w-s bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 translate-x-full" id="mobile-menu">
+        <div class="flex flex-col h-full overflow-y-auto">
+          <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <a class="text-xl font-bold" href={getHomePermalink()}>
+              <Logo />
+            </a>
+            <button type="button" class="p-2 -mr-2" onclick="document.querySelector('[data-aw-toggle-menu]').click()">
+              <Icon name="tabler:x" class="w-6 h-6" />
+            </button>
+          </div>
+          
+          <nav class="flex-1 p-4 space-y-2">
+            {links.map(({ text, href, links: subLinks }) => (
+              <div class="mb-2">
+                {subLinks?.length ? (
+                  <div class="space-y-2">
+                    <div class="font-medium text-gray-900 dark:text-white px-3 py-2">
+                      {text}
+                    </div>
+                    <div class="pl-4 space-y-1">
+                      {subLinks.map(({ text: text2, href: href2 }) => (
+                        <a
+                          href={href2}
+                          class:list={[
+                            'block px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
+                            { 'bg-gray-100 dark:bg-gray-800': href2 === currentPath }
+                          ]}
+                        >
+                          {text2}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <a
+                    href={href}
+                    class:list={[
+                      'block px-3 py-2 rounded-md font-medium',
+                      href === currentPath
+                        ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-gray-800'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    ]}
+                  >
+                    {text}
+                  </a>
+                )}
+              </div>
+            ))}
+          </nav>
+          
+          {actions.length > 0 && (
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+              <div class="flex flex-col space-y-2">
+                {actions.map((action, index) => (
+                  <a
+                    href={action.href}
+                    class:list={[
+                      'btn',
+                      action.variant === 'primary' ? 'btn-primary' : 'btn-ghost',
+                      'w-full text-center',
+                      action.classes
+                    ]}
+                    aria-label={action['aria-label']}
+                  >
+                    {action.text}
+                    {action.icon && (
+                      <Icon name={action.icon} class="w-4 h-4 ml-1 -mr-1" />
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      {/* Desktop Navigation */}
       <nav class="hidden lg:block" aria-label="Main navigation">
         <ul class="flex flex-row items-center justify-end space-x-6">
         {
           links.map(({ text, href, links }) => (
-            <li class={links?.length ? 'dropdown' : ''}>
+            <li class={links?.length ? 'dropdown group' : ''}>
               {links?.length ? (
                 <>
                   <button
@@ -84,14 +165,14 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                     class="hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap"
                   >
                     {text}{' '}
-                    <Icon name="tabler:chevron-down" class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline" />
+                    <Icon name="tabler:chevron-down" class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline transition-transform group-hover:rotate-180" />
                   </button>
-                  <ul class="dropdown-menu md:backdrop-blur-md dark:md:bg-dark rounded md:absolute pl-4 md:pl-0 md:hidden font-medium md:bg-white/90 md:min-w-[200px] drop-shadow-xl">
+                  <ul class="dropdown-menu md:backdrop-blur-md dark:md:bg-dark rounded md:absolute pl-4 md:pl-0 md:opacity-0 md:invisible md:group-hover:opacity-100 md:group-hover:visible transition-all duration-200 font-medium md:bg-white/90 md:min-w-[200px] drop-shadow-xl z-50">
                     {links.map(({ text: text2, href: href2 }) => (
                       <li>
                         <a
                           class:list={[
-                            'first:rounded-t last:rounded-b md:hover:bg-gray-100 hover:text-link dark:hover:text-white dark:hover:bg-gray-700 py-2 px-5 block whitespace-no-wrap',
+                            'first:rounded-t last:rounded-b hover:bg-gray-100 hover:text-link dark:hover:text-white dark:hover:bg-gray-700 py-2 px-5 block whitespace-nowrap',
                             { 'aw-link-active': href2 === currentPath },
                           ]}
                           href={href2}

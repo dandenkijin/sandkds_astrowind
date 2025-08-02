@@ -1,81 +1,65 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 import { defineConfig } from 'astro/config';
-
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
 import compress from 'astro-compress';
-import type { AstroIntegration } from 'astro';
-import decapCMS from 'astro-decap-cms';
-import cmsConfig from './cms.config';
 
-import astrowind from './vendor/integration';
+// CMS configuration has been moved to /public/admin/cms.js
 
+// Import custom plugins
 import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin, lazyImagesRehypePlugin } from './src/utils/frontmatter';
 
+// Import theme integration
+import astrowind from './vendor/integration';
+
+// Import Svelte integration
 import svelte from '@astrojs/svelte';
-
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const hasExternalScripts = false;
-const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroIntegration)[] = []) =>
-  hasExternalScripts ? (Array.isArray(items) ? items.map((item) => item()) : [items()]) : [];
 
 export default defineConfig({
   output: 'static',
 
   integrations: [
-    // Decap CMS integration
-    decapCMS({
-      // The path where the CMS will be available
-      adminPath: '/admin',
-      // Your CMS configuration
-      config: cmsConfig,
-      // Enable preview styles if needed
-      previewStyles: [
-        // Add any custom preview styles here
-      ],
-    }),
-    
-    sitemap(), 
-    mdx(), 
+    sitemap(),
+    mdx(),
     icon({
-    include: {
-      tabler: ['*'],
-      'flat-color-icons': [
-        'template',
-        'gallery',
-        'approval',
-        'document',
-        'advertising',
-        'currency-exchange',
-        'voice-presentation',
-        'business-contact',
-        'database',
-      ],
-    },
-  }), ...whenExternalScripts(() =>
-    partytown({
-      config: { forward: ['dataLayer.push'] },
-    })
-  ), compress({
-    CSS: true,
-    HTML: {
-      'html-minifier-terser': {
-        removeAttributeQuotes: false,
+      include: {
+        tabler: ['*'],
+        'flat-color-icons': [
+          'template',
+          'gallery',
+          'approval',
+          'document',
+          'advertising',
+          'currency-exchange',
+          'voice-presentation',
+          'business-contact',
+          'database',
+        ],
       },
-    },
-    Image: false,
-    JavaScript: true,
-    SVG: false,
-    Logger: 1,
-  }), astrowind({
-    config: './src/config.yaml',
-  }), svelte()],
+    }),
+    partytown({
+      config: {
+        forward: ['dataLayer.push'],
+      },
+    }),
+    compress({
+      CSS: true,
+      HTML: {
+        'html-minifier-terser': {
+          removeAttributeQuotes: false,
+        },
+      },
+      Image: false,
+      JavaScript: true,
+      SVG: false,
+      Logger: 1,
+    }),
+    astrowind({
+      config: './src/config.yaml',
+    }),
+    svelte()
+  ],
 
   image: {
     domains: ['cdn.pixabay.com'],
@@ -89,7 +73,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        '~': path.resolve(__dirname, './src'),
+        '~': new URL('./src', import.meta.url).pathname,
       },
     },
   },

@@ -15,11 +15,13 @@ const metadata = {
   },
   article: false,
 };
-
-// The astro-decap-cms integration will automatically handle the CMS initialization
-// by looking for a div with id="nc-root"
 ---
 
 <Layout metadata={metadata}>
-  <div id="nc-root" class="min-h-screen"></div>
+  <div id="nc-root" class="min-h-screen">
+    <div style="padding: 2rem; max-width: 800px; margin: 0 auto; text-align: center;">
+      <h1>Loading CMS...</h1>
+      <p>If you see this message for more than a few seconds, check the browser console for errors.</p>
+    </div>
+  </div>
 </Layout>

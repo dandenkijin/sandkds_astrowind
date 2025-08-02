@@ -11,12 +11,19 @@
   GATSBY_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "18"
 
-# Handle admin routes - must come before SPA redirect
+# Handle admin routes - serve index.html for /admin
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+  force = false
+
+# Handle all other admin routes
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
   status = 200
-  force = true
+  force = false
 
 # Handle Netlify Identity
 # Note: These redirects are handled automatically by Netlify, no need to specify them

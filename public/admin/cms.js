@@ -1,42 +1,83 @@
 // Wait for the CMS to be fully loaded
-function initCMS() {
-  const loadingElement = document.querySelector('.loading');
+(function() {
+  var loadingElement = document.querySelector('.loading');
   
   // Show loading state
-  if (loadingElement) {
-    loadingElement.textContent = 'Initializing CMS...';
+  function updateLoadingMessage(message) {
+    if (loadingElement) {
+      var messageEl = loadingElement.querySelector('p:first-child');
+      if (messageEl) {
+        messageEl.textContent = message;
+      }
+    }
+    console.log(message);
   }
 
-  // Check if CMS is available
-  if (typeof CMS === 'undefined') {
-    console.error('CMS is not defined. Make sure decap-cms.js is loaded before this script.');
-    showError('CMS is not loaded. Please check your internet connection and refresh the page.');
-    return;
-  }
+  updateLoadingMessage('Preparing CMS...');
 
   // Function to initialize the CMS with config
   function initializeCMS(config) {
     try {
+      updateLoadingMessage('Initializing CMS...');
       console.log('Initializing CMS with config:', config);
       
-      // Register preview styles
-      CMS.registerPreviewStyle('/admin/cms.css');
+      // Initialize Decap CMS
+      if (typeof CMS !== 'undefined') {
+        CMS.init({ config });
+      } else {
+        throw new Error('CMS object not found. Make sure Decap CMS script is loaded.');
+      }
+          <anonymous> https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js:2
+      decap-cms.js:54:69373
+      Preparing CMS... cms.js:13:13
+      CMS is not defined. Make sure decap-cms.js is loaded before this script. cms.js:185:15
+      CMS is not loaded. Please check your internet connection and refresh the page. cms.js:65:13
+      updateLoadingMessage('Initializing CMS...');
+      
+      // Ensure CMS is available
+      if (typeof CMS === 'undefined') {
+        throw new Error('CMS is not defined');
+      }
+      
+      // Register preview styles if available
+      if (typeof CMS.registerPreviewStyle === 'function') {
+        CMS.registerPreviewStyle('/admin/cms.css');
+      }
       
       // Initialize CMS with a small delay to ensure everything is ready
-      setTimeout(() => {
+      setTimeout(function() {
         try {
-          CMS.init({
-            config: config
-          });
-          console.log('CMS initialized successfully');
-          
-          // Hide loading indicator
-          if (loadingElement) {
-            loadingElement.style.display = 'none';
+          if (typeof CMS.init === 'function') {
+            // Ensure the root element exists
+            var rootElement = document.getElementById('nc-root');
+            if (!rootElement) {
+              throw new Error('Root element (#nc-root) not found in the DOM');
+            }
+            
+            // Initialize the CMS
+            CMS.init({
+              config: config
+            });
+            
+            console.log('CMS initialized successfully');
+            updateLoadingMessage('CMS ready! Loading interface...');
+            
+            // Hide loading indicator after a short delay
+            setTimeout(function() {
+              if (loadingElement) {
+                loadingElement.style.opacity = '0';
+                setTimeout(function() {
+                  loadingElement.style.display = 'none';
+                }, 300);
+              }
+            }, 500);
+            
+          } else {
+            throw new Error('CMS.init is not a function. The CMS script may not have loaded correctly.');
           }
         } catch (error) {
           console.error('Error during CMS.init():', error);
-          showError(`CMS initialization failed: ${error.message || 'Unknown error'}`);
+          showError('CMS initialization failed: ' + (error.message || 'Unknown error'));
         }
       }, 100);
       
@@ -45,54 +86,46 @@ function initCMS() {
       showError(`Failed to initialize CMS: ${error.message || 'Unknown error'}`);
     }
   }
-  
-  // Show error message
-  function showError(message) {
-    console.error(message);
-    if (loadingElement) {
-      loadingElement.innerHTML = `
-        <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 4px; max-width: 600px; margin: 0 auto;">
-          <h3 style="margin-top: 0;">Error loading CMS</h3>
-          <p>${message}</p>
-          <p>Check the browser console for more details.</p>
-          <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            Try Again
-          </button>
-        </div>
-      `;
-    }
-  }
 
-  // Load config from YAML
+  // Load config from YAML or use fallback
   async function loadConfig() {
     try {
-      if (loadingElement) {
-        loadingElement.textContent = 'Loading CMS configuration...';
+      updateLoadingMessage('Loading configuration...');
+      
+      let config;
+      
+      // Try to load from YAML first
+      try {
+        const response = await fetch('/admin/config.yml');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const yamlText = await response.text();
+        const yaml = window.jsyaml || {};
+        
+        if (yaml.load) {
+          config = yaml.load(yamlText);
+          if (!config) throw new Error('Empty configuration');
+          console.log('Successfully loaded config from YAML');
+        } else {
+          throw new Error('YAML parser not available');
+        }
+      } catch (yamlError) {
+        console.warn('Failed to load config from YAML, using fallback config:', yamlError);
+        throw new Error('Could not load configuration file. Using fallback configuration.');
       }
       
-      const response = await fetch('/admin/config.yml');
-      if (!response.ok) {
-        throw new Error(`Failed to load config.yml: ${response.status} ${response.statusText}`);
-      }
-      
-      const yamlText = await response.text();
-      const yaml = window.jsyaml || {};
-      const config = yaml.load ? yaml.load(yamlText) : null;
-      
-      if (!config) {
-        throw new Error('Failed to parse YAML config. Please check the config.yml file for syntax errors.');
-      }
-      
-      // Ensure site URL is set
+      // Ensure required fields are set
       config.site_url = config.site_url || window.location.origin;
       
-      // Add local backend configuration if not present
+      // Auto-enable local backend for localhost
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         config.local_backend = true;
-        console.log('Local development mode enabled');
+        console.log('Local development mode: Enabled local backend');
       }
       
-      // Initialize CMS with the loaded config
+      // Initialize with the loaded config
       initializeCMS(config);
       
     } catch (error) {
@@ -140,14 +173,36 @@ function initCMS() {
     }
   }
 
-  // Start loading the configuration
-  loadConfig();
-}
+  // Start the initialization process
+  function init() {
+    try {
+      // Check if CMS is available
+      if (typeof CMS === 'undefined') {
+        throw new Error('CMS is not defined. Make sure decap-cms.js is loaded before this script.');
+      }
+      
+      // Check if root element exists
+      if (!document.getElementById('nc-root')) {
+        throw new Error('Root element (#nc-root) not found in the DOM');
+      }
+      
+      console.log('Starting CMS initialization...');
+      updateLoadingMessage('Preparing CMS...');
+      
+      // Start loading the configuration
+      loadConfig();
+      
+    } catch (error) {
+      console.error('Failed to initialize CMS:', error);
+      showError(error.message || 'Failed to initialize CMS. Please check the console for details.');
+    }
+  }
 
-// Start initialization when the DOM is fully loaded
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initCMS);
-} else {
-  // If the document is already loaded, run immediately
-  initCMS();
-}
+  // Start initialization when the DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    // If the document is already loaded, run immediately
+    setTimeout(init, 0);
+  }
+})();

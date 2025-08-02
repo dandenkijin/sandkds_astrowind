@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Manager</title>
+    
+    <!-- Load CSS first -->
+    <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/cms.css" />
+    <link rel="stylesheet" href="/admin/cms.css" />
+    
+    <style>
+      /* Loading and error styles */
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+      }
+      
+      .loading p {
+        font-size: 1.2rem;
+        color: #333;
+      }
+      
+      #cms-error {
+        display: none;
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 1.5rem;
+        border-radius: 4px;
+        max-width: 800px;
+        margin: 2rem auto;
+      }
+      
+      #cms-error h3 {
+        margin: 0 0 1rem 0;
+        color: #721c24;
+      }
+      
+      .error-details {
+        margin: 1rem 0;
+        padding: 0.75rem;
+        background: #fff;
+        border: 1px solid #f1aeb5;
+        border-radius: 4px;
+        font-family: monospace;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0.5rem 0 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #f8f9fa;
+        color: #212529;
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      
+      .btn:hover {
+        background: #e9ecef;
+        transform: translateY(-1px);
+      }
+      
+      .btn-primary {
+        background: #0d6efd;
+        border-color: #0d6efd;
+        color: white;
+      }
+      
+      .btn-primary:hover {
+        background: #0b5ed7;
+        border-color: #0a58ca;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- CMS Root -->
+    <div id="nc-root">
+      <div class="loading">
+        <p>Loading CMS, please wait...</p>
+      </div>
+    </div>
+    
+    <div id="cms-error">
+      <h3>Error Loading CMS</h3>
+      <p>An error occurred while loading the CMS. Please try again or contact support if the problem persists.</p>
+      <div class="error-details"></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="retry-btn">Try Again</button>
+        <a href="https://decapcms.org/docs/troubleshooting/" class="btn" target="_blank" rel="noopener">View Troubleshooting Guide</a>
+      </div>
+    </div>
+
+    <!-- Scripts will be loaded here -->
+    <div id="scripts"></div>
+
+    <script>
+      (function() {
+        'use strict';
+
+        // Configuration
+        const CONFIG = {
+          scripts: [
+            {
+              src: 'https://identity.netlify.com/v1/netlify-identity-widget.js',
+              name: 'Netlify Identity',
+              required: true
+            },
+            {
+              src: 'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js',
+              name: 'JS-YAML Parser',
+              required: true
+            },
+            {
+              src: 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js',
+              name: 'Decap CMS',
+              required: true
+            },
+            {
+              src: '/admin/cms-new.js',
+              name: 'CMS Configuration',
+              required: true
+            }
+          ],
+          maxRetries: 3,
+          retryDelay: 1000
+        };
+
+        // State
+        let currentScriptIndex = 0;
+        let retryCount = 0;
+
+        // DOM Elements
+        const loadingElement = document.querySelector('.loading');
+        const errorElement = document.getElementById('cms-error');
+        const errorDetails = errorElement.querySelector('.error-details');
+        const retryButton = document.getElementById('retry-btn');
+        const scriptsContainer = document.getElementById('scripts');
+
+        // Show loading message
+        function updateLoadingMessage(message) {
+          if (loadingElement) {
+            const p = loadingElement.querySelector('p') || document.createElement('p');
+            p.textContent = message;
+            if (!loadingElement.contains(p)) {
+              loadingElement.innerHTML = '';
+              loadingElement.appendChild(p);
+            }
+          }
+          console.log(`[CMS] ${message}`);
+        }
+
+        // Show error message
+        function showError(message, error = null) {
+          console.error(`[CMS Error] ${message}`, error);
+          
+          if (errorElement) {
+            errorElement.style.display = 'block';
+            if (error) {
+              errorDetails.textContent = error.message || String(error);
+            } else {
+              errorDetails.textContent = message;
+            }
+          }
+          
+          if (loadingElement) {
+            loadingElement.style.display = 'none';
+          }
+        }
+
+        // Initialize Netlify Identity
+        function initNetlifyIdentity() {
+          if (window.netlifyIdentity) {
+            window.netlifyIdentity.on('init', function(user) {
+              console.log('[CMS] Netlify Identity initialized', user ? 'User logged in' : 'No user');
+            });
+            
+            // For local development, auto-login
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              console.log('[CMS] Local development: Auto-initializing Netlify Identity');
+              window.netlifyIdentity.init();
+            }
+          } else {
+            console.warn('[CMS] Netlify Identity not available');
+          }
+        }
+
+        // Load the next script in sequence
+        function loadNextScript() {
+          if (currentScriptIndex >= CONFIG.scripts.length) {
+            // All scripts loaded successfully
+            updateLoadingMessage('CMS initialized successfully!');
+            setTimeout(() => {
+              if (loadingElement) loadingElement.style.opacity = '0';
+              setTimeout(() => {
+                if (loadingElement) loadingElement.style.display = 'none';
+              }, 300);
+            }, 500);
+            return;
+          }
+
+          const scriptInfo = CONFIG.scripts[currentScriptIndex];
+          updateLoadingMessage(`Loading ${scriptInfo.name}...`);
+
+          const script = document.createElement('script');
+          script.src = scriptInfo.src;
+          script.async = false;
+          
+          script.onload = () => {
+            console.log(`[CMS] Loaded ${scriptInfo.name}`);
+            retryCount = 0;
+            
+            // Special handling for Netlify Identity
+            if (scriptInfo.name === 'Netlify Identity') {
+              initNetlifyIdentity();
+            }
+            
+            currentScriptIndex++;
+            loadNextScript();
+          };
+          
+          script.onerror = () => {
+            if (retryCount < CONFIG.maxRetries) {
+              retryCount++;
+              console.warn(`[CMS] Retry ${retryCount}/${CONFIG.maxRetries} for ${scriptInfo.name}`);
+              setTimeout(() => {
+                scriptsContainer.removeChild(script);
+                loadNextScript();
+              }, CONFIG.retryDelay * retryCount);
+            } else {
+              showError(`Failed to load ${scriptInfo.name} after ${CONFIG.maxRetries} attempts`);
+            }
+          };
+          
+          scriptsContainer.appendChild(script);
+        }
+
+        // Initialize the application
+        function initialize() {
+          console.log('[CMS] Starting CMS initialization...');
+          
+          // Hide error element initially
+          if (errorElement) {
+            errorElement.style.display = 'none';
+          }
+          
+          // Set up retry button
+          if (retryButton) {
+            retryButton.onclick = function() {
+              window.location.reload();
+            };
+          }
+          
+          // Start loading scripts
+          loadNextScript();
+        }
+
+        // Start initialization when DOM is ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+          // DOM already loaded
+          setTimeout(initialize, 0);
+        }
+      })();
+    </script>
+  </body>
+</html>

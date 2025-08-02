@@ -5,6 +5,9 @@ import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
 import compress from 'astro-compress';
 
+// This configuration ensures that the admin panel works correctly with Astro's static site generation
+// and handles SPA routing for the Decap CMS admin interface
+
 // CMS configuration has been moved to /public/admin/cms.js
 
 // Import custom plugins
@@ -44,7 +47,7 @@ export default defineConfig({
       },
     }),
     compress({
-      CSS: true,
+      CSS: true, // Enable CSS compression
       HTML: {
         'html-minifier-terser': {
           removeAttributeQuotes: false,
@@ -70,11 +73,51 @@ export default defineConfig({
     rehypePlugins: [responsiveTablesRehypePlugin, lazyImagesRehypePlugin],
   },
 
+  // Vite configuration
   vite: {
+    build: {
+      // Ensure proper handling of static assets
+      assetsInlineLimit: 0
+    },
     resolve: {
       alias: {
-        '~': new URL('./src', import.meta.url).pathname,
-      },
+        '~': new URL('./src', import.meta.url).pathname
+      }
     },
+    server: {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+        'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization'
+      },
+      fs: {
+        // Allow serving files from the admin directory
+        allow: ['..']
+      },
+      cors: true
+    },
+    optimizeDeps: {
+      // Ensure Vite properly optimizes dependencies
+      include: ['@astrojs/mdx']
+    }
   },
+  
+  // Configure the dev server
+  server: {
+    // Handle SPA routing for the admin panel
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store'
+    },
+    // Ensure /admin and /admin/ both serve index.html
+    open: '/admin'
+  },
+  
+  // Configure the output directory for the static build
+  outDir: 'dist',
+  
+  // Configure the public directory for static assets
+  publicDir: 'public',
 });

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Manager</title>
+    <!-- Load CSS first -->
+    <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/cms.css" />
+    <link rel="stylesheet" href="/admin/cms.css" />
+    <style>
+      /* Loading and error states */
+      .loading, .error {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+      }
+      
+      .loading p, .error p {
+        font-size: 1.2rem;
+        color: #333;
+        margin: 0.5rem 0;
+      }
+      
+      .error {
+        display: none;
+        background: #fff5f5;
+      }
+      
+      .error p {
+        color: #e53e3e;
+        max-width: 80%;
+        text-align: center;
+      }
+      
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top-color: #3182ce;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 1rem;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+    <style>
+      /* Loading and error styles */
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+      }
+      
+      .loading p {
+        font-size: 1.2rem;
+        color: #333;
+      }
+      
+      #cms-error {
+        display: none;
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 1.5rem;
+        border-radius: 4px;
+        max-width: 800px;
+        margin: 2rem auto;
+      }
+      
+      #cms-error h3 {
+        margin: 0 0 1rem 0;
+        color: #721c24;
+      }
+      
+      .error-details {
+        margin: 1rem 0;
+        padding: 0.75rem;
+        background: #fff;
+        border: 1px solid #f1aeb5;
+        border-radius: 4px;
+        font-family: monospace;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0.5rem 0 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #f8f9fa;
+        color: #212529;
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      
+      .btn:hover {
+        background: #e9ecef;
+        transform: translateY(-1px);
+      }
+      
+      .btn-primary {
+        background: #0d6efd;
+        border-color: #0d6efd;
+        color: white;
+      }
+      
+      .btn-primary:hover {
+        background: #0b5ed7;
+        border-color: #0a58ca;
+      }
+      
+      .btn-danger {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: white;
+      }
+      
+      .btn-danger:hover {
+        background: #bb2d3b;
+        border-color: #b02a37;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- CMS Root -->
+    <div id="nc-root">
+      <div class="loading">
+        <p>Loading CMS, please wait...</p>
+      </div>
+    </div>
+    
+    <div id="cms-error">
+      <h3>Error Loading CMS</h3>
+      <p>An error occurred while loading the CMS. Please try again or contact support if the problem persists.</p>
+      <div class="error-details"></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="retry-btn">Try Again</button>
+        <a href="https://decapcms.org/docs/troubleshooting/" class="btn" target="_blank" rel="noopener">View Troubleshooting Guide</a>
+      </div>
+    </div>
+
+    <!-- Scripts will be loaded here -->
+    <div id="scripts"></div>
+
+    <script>
+      (function() {
+        'use strict';
+
+        // Configuration
+        const CONFIG = {
+          scripts: [
+            {
+              src: 'https://identity.netlify.com/v1/netlify-identity-widget.js',
+              name: 'Netlify Identity',
+              required: true
+            },
+            {
+              src: 'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js',
+              name: 'JS-YAML Parser',
+              required: true
+            },
+            {
+              src: 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js',
+              name: 'Decap CMS',
+              required: true
+            },
+            {
+              src: '/admin/cms-new.js',
+              name: 'CMS Configuration',
+              required: true
+            }
+          ],
+          maxRetries: 3,
+          retryDelay: 1000
+        };
+
+        // State
+        let currentScriptIndex = 0;
+        let retryCount = 0;
+
+        // DOM Elements
+        const loadingElement = document.querySelector('.loading');
+        const errorElement = document.getElementById('cms-error');
+        const errorDetails = errorElement.querySelector('.error-details');
+        const retryButton = document.getElementById('retry-btn');
+        const scriptsContainer = document.getElementById('scripts');
+
+        // Show loading message
+        function updateLoadingMessage(message) {
+          if (loadingElement) {
+            const p = loadingElement.querySelector('p') || document.createElement('p');
+            p.textContent = message;
+            if (!loadingElement.contains(p)) {
+              loadingElement.innerHTML = '';
+              loadingElement.appendChild(p);
+            }
+          }
+          console.log(`[CMS] ${message}`);
+        }
+
+        // Show error message
+        function showError(message, error = null) {
+          console.error(`[CMS Error] ${message}`, error);
+          
+          if (errorElement) {
+            errorElement.style.display = 'block';
+            if (error) {
+              errorDetails.textContent = error.message || String(error);
+            } else {
+              errorDetails.textContent = message;
+            }
+          }
+          
+          if (loadingElement) {
+            loadingElement.style.display = 'none';
+          }
+        }
+
+        // Initialize Netlify Identity
+        function initNetlifyIdentity() {
+          if (window.netlifyIdentity) {
+            window.netlifyIdentity.on('init', function(user) {
+              console.log('[CMS] Netlify Identity initialized', user ? 'User logged in' : 'No user');
+            });
+            
+            // For local development, auto-login
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              console.log('[CMS] Local development: Auto-initializing Netlify Identity');
+              window.netlifyIdentity.init();
+            }
+          } else {
+            console.warn('[CMS] Netlify Identity not available');
+          }
+        }
+
+        // Load the next script in sequence
+        function loadNextScript() {
+          if (currentScriptIndex >= CONFIG.scripts.length) {
+            // All scripts loaded successfully
+            updateLoadingMessage('CMS initialized successfully!');
+            setTimeout(() => {
+              if (loadingElement) loadingElement.style.opacity = '0';
+              setTimeout(() => {
+                if (loadingElement) loadingElement.style.display = 'none';
+              }, 300);
+            }, 500);
+            return;
+          }
+
+          const scriptInfo = CONFIG.scripts[currentScriptIndex];
+          updateLoadingMessage(`Loading ${scriptInfo.name}...`);
+
+          const script = document.createElement('script');
+          script.src = scriptInfo.src;
+          script.async = false;
+          
+          script.onload = () => {
+            console.log(`[CMS] Loaded ${scriptInfo.name}`);
+            retryCount = 0;
+            
+            // Special handling for Netlify Identity
+            if (scriptInfo.name === 'Netlify Identity') {
+              initNetlifyIdentity();
+            }
+            
+            currentScriptIndex++;
+            loadNextScript();
+          };
+          
+          script.onerror = () => {
+            if (retryCount < CONFIG.maxRetries) {
+              retryCount++;
+              console.warn(`[CMS] Retry ${retryCount}/${CONFIG.maxRetries} for ${scriptInfo.name}`);
+              setTimeout(() => {
+                scriptsContainer.removeChild(script);
+                loadNextScript();
+              }, CONFIG.retryDelay * retryCount);
+            } else {
+              showError(`Failed to load ${scriptInfo.name} after ${CONFIG.maxRetries} attempts`);
+            }
+          };
+          
+          scriptsContainer.appendChild(script);
+        }
+
+        // Initialize the application
+        function initialize() {
+          console.log('[CMS] Starting CMS initialization...');
+          
+          // Hide error element initially
+          if (errorElement) {
+            errorElement.style.display = 'none';
+          }
+          
+          // Set up retry button
+          if (retryButton) {
+            retryButton.onclick = function() {
+              window.location.reload();
+            };
+          }
+          
+          // Start loading scripts
+          loadNextScript();
+        }
+
+        // Start initialization when DOM is ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+          // DOM already loaded
+          setTimeout(initialize, 0);
+        }
+      })();
+    </script>
+  </body>
+</html>
+            
+            // 2. Load YAML parser
+            loadScript(
+              CONFIG.cdn.yaml,
+              function() {
+                console.log('YAML parser loaded');
+                
+                // 3. Load Decap CMS
+                loadScript(
+                  CONFIG.cdn.cms,
+                  function() {
+                    console.log('Decap CMS loaded');
+                    
+                    // 4. Load CMS config
+                    loadScript(
+                      CONFIG.paths.config,
+                      function() {
+                        console.log('CMS configuration loaded');
+                      },
+                      function() {
+                        showError('Failed to load CMS configuration', false);
+                      }
+                    );
+                    
+                  },
+                  function() {
+                    showError('Failed to load Decap CMS. Please check your internet connection.', true);
+                  }
+                );
+                
+              },
+              function() {
+                showError('Failed to load YAML parser. Some features may not work.', false);
+                // Continue with CMS loading even if YAML fails
+                loadScript(
+                  CONFIG.cdn.cms,
+                  function() {
+                    loadScript(CONFIG.paths.config, function() {}, function() {});
+                  },
+                  function() {
+                    showError('Failed to load Decap CMS', true);
+                  }
+                );
+              }
+            );
+            
+          },
+          function() {
+            showError('Failed to load Netlify Identity. Authentication will not work.', false);
+            // Continue with YAML and CMS loading
+            loadScript(
+              CONFIG.cdn.yaml,
+              function() {
+                loadScript(
+                  CONFIG.cdn.cms,
+                  function() {
+                    loadScript(CONFIG.paths.config, function() {}, function() {});
+                  },
+                  function() {
+                    showError('Failed to load Decap CMS', true);
+                  }
+                );
+              },
+              function() {
+                // If YAML fails, still try to load CMS
+                loadScript(
+                  CONFIG.cdn.cms,
+                  function() {
+                    loadScript(CONFIG.paths.config, function() {}, function() {});
+                  },
+                  function() {
+                    showError('Failed to load required components', true);
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+
+      // Start initialization when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeApp);
+      } else {
+        // If the document is already loaded, run immediately
+        initializeApp();
+      }
+    </script>
+  </body>
+  <script>
+    // Wait for the entire page to be loaded
+    window.addEventListener('load', function() {
+      // Configuration
+      const CONFIG = {
+        cdn: {
+          yaml: 'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js',
+          cms: 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js',
+          identity: 'https://identity.netlify.com/v1/netlify-identity-widget.js'
+        },
+        paths: {
+          config: '/admin/cms-new.js?t=' + Date.now(),
+          cmsCss: 'https://unpkg.com/decap-cms@^3.0.0/dist/cms.css',
+          customCss: '/admin/cms.css'
+        }
+      };
+
+      // Show error message
+      function showError(message, isFatal = true) {
+        console.error(message);
+        const loading = document.querySelector('.loading');
+        if (loading) {
+          loading.innerHTML = `
+            <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; 
+                          padding: 1.5rem; border-radius: 4px; max-width: 600px; margin: 0 auto;">
+              <h3 style="margin: 0 0 1rem 0; color: #721c24;">
+                <span style="display: inline-block; margin-right: 0.5rem;">⚠️</span>
+                Error loading CMS
+              </h3>
+              <p style="margin: 0.5rem 0;">${message}</p>
+              <p style="margin: 0.5rem 0 1.5rem; font-size: 0.9em; color: #666;">
+                Check the browser console (F12) for more details.
+              </p>
+              <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button onclick="window.location.reload()" 
+                        style="padding: 0.6rem 1.2rem; background: #dc3545; color: white; 
+                              border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">
+                  Try Again
+                </button>
+                ${isFatal ? `
+                <button onclick="window.open('https://decapcms.org/docs/troubleshooting', '_blank')" 
+                        style="padding: 0.6rem 1.2rem; background: #f8f9fa; color: #212529; 
+                              border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer;">
+                  View Troubleshooting Guide
+                </button>` : ''}
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Load a script with error handling and retries
+      function loadScript(src, onload, onerror, retries = 3, delay = 1000) {
+        const script = document.createElement('script');
+        script.src = src;
+        
+        script.onload = function() {
+          console.log('Loaded script:', src);
+          if (onload) onload();
+        };
+        
+        script.onerror = function() {
+          if (retries > 0) {
+            console.warn(`Failed to load ${src}, ${retries} retries left...`);
+            setTimeout(() => {
+              loadScript(src, onload, onerror, retries - 1, delay * 1.5);
+            }, delay);
+          } else if (onerror) {
+            onerror();
+          } else {
+            showError(`Failed to load required script: ${src}`, true);
+          }
+        };
+        
+        document.head.appendChild(script);
+      }
+
+      // Initialize Netlify Identity
+      function initNetlifyIdentity() {
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.on('init', function(user) {
+            console.log('Netlify Identity initialized', user ? 'User logged in' : 'No user');
+            if (!user) {
+              window.netlifyIdentity.on('login', function() {
+                document.location.href = '/admin/';
+              });
+            }
+          });
+          
+          // For local development, auto-login
+          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('Local development: Auto-initializing Netlify Identity');
+            window.netlifyIdentity.init();
+          }
+        } else {
+          console.warn('Netlify Identity not available');
+        }
+      }
+
+      // Main initialization function
+      function initializeApp() {
+        console.log('Starting CMS initialization...');
+        
+        // 1. Load Netlify Identity first
+        loadScript(
+          CONFIG.cdn.identity,
+          function() {
+            console.log('Netlify Identity loaded');
+            initNetlifyIdentity();
+            
+            // 2. Load YAML parser
+            loadScript(
+              CONFIG.cdn.yaml,
+              function() {
+                console.log('YAML parser loaded');
+                
+                // 3. Load Decap CMS
+                loadScript(
+                  CONFIG.cdn.cms,
+                  function() {
+                    console.log('Decap CMS loaded');
+                    
+                    // 4. Load CMS config
+                    loadScript(
+                      CONFIG.paths.config,
+                      function() {
+                        console.log('CMS configuration loaded');
+                      },
+                      function() {
+                        showError('Failed to load CMS configuration', false);
+                      }
+                    );
+                    
+                  },
+                  function() {
+                    showError('Failed to load Decap CMS. Please check your internet connection.', true);
+                  }
+                );
+                
+              },
+              function() {
+                showError('Failed to load YAML parser. Some features may not work.', false);
+                // Continue with CMS loading even if YAML fails
+                loadScript(
+                  CONFIG.cdn.cms,
+                  function() {
+                    loadScript(CONFIG.paths.config, function() {}, function() {});
+                  },
+                  function() {
+                    showError('Failed to load Decap CMS', true);
+                  }
+                );
+              }
+            );
+            
+          },
+          function() {
+            showError('Failed to load Netlify Identity. Authentication will not work.', false);
+            // Continue with YAML and CMS loading
+            loadScript(
+              CONFIG.cdn.yaml,
+              function() {
+                loadScript(
+                  CONFIG.cdn.cms,
+                  function() {
+                    loadScript(CONFIG.paths.config, function() {}, function() {});
+                  },
+                  function() {
+                    showError('Failed to load Decap CMS', true);
+                  }
+                );
+              },
+              function() {
+                // If YAML fails, still try to load CMS
+                loadScript(
+                  CONFIG.cdn.cms,
+                  function() {
+                    loadScript(CONFIG.paths.config, function() {}, function() {});
+                  },
+                  function() {
+                    showError('Failed to load required components', true);
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+
+      // Start the initialization
+      initializeApp();
+    });
+  </script>
+</html>

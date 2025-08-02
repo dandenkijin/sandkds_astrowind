@@ -101,8 +101,17 @@
     <!-- Scripts will be loaded here -->
     <div id="scripts"></div>
     
+    <!-- Load YAML parser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    
     <!-- Load Decap CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    
+    <!-- Make YAML available to our script -->
+    <script>
+      // Make jsyaml available globally
+      window.jsyaml = window.jsyaml || window.jsyaml;
+    </script>
     
     <!-- Load our custom initialization script -->
     <script src="/admin/cms-clean.js"></script>

@@ -7,14 +7,14 @@
 
 # Environment variables
 [build.environment]
-  NETLIFY_USE_PNPM = "true"
+  NETLIFY_USE_PNPM = "false"
   GATSBY_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "18"
 
 # Handle admin routes - must come before SPA redirect
 [[redirects]]
   from = "/admin/*"
-  to = "/admin/"
+  to = "/admin/index.html"
   status = 200
   force = true
 
@@ -34,6 +34,23 @@
   to = "/node_modules/:splat"
   status = 200
   force = true
+  
+# Make sure node_modules is accessible in development
+[[headers]]
+  for = "/node_modules/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "no-cache"
+
+# CSP for admin routes
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self' data: 'unsafe-inline' 'unsafe-eval' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:;"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
 
 # Handle SPA routing - must be last
 [[redirects]]
@@ -42,16 +59,12 @@
   status = 200
 
 # Security headers for admin
-# Admin page headers
+# Admin page headers - minimal for development
 [[headers]]
-  for = "/admin"
+  for = "/admin/*"
   [headers.values]
-    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://identity.netlify.com; style-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https://api.netlify.com https://api.github.com https://identity.netlify.com http://localhost:* ws://localhost:*; form-action 'self' https://identity.netlify.com; base-uri 'self'; worker-src 'self' blob:;"
-    Feature-Policy = "camera 'none'; microphone 'none'; geolocation 'none';"
+    Content-Security-Policy = "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; img-src * data:; font-src * data:; connect-src *;"
 
 # Test page - minimal headers for debugging
 [[headers]]

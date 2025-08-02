@@ -1,0 +1,25 @@
+---
+// src/pages/admin/[[...]].astro
+// This page serves the Decap CMS admin interface
+import Layout from '../../layouts/Layout.astro';
+
+// Define metadata for the page
+const metadata = {
+  title: 'Admin | Sandkds CMS',
+  description: 'Content Management System for Sandkds',
+  canonical: '/admin',
+  noindex: true,
+  ogImage: {
+    src: '',
+    alt: 'Sandkds CMS',
+  },
+  article: false,
+};
+
+// The astro-decap-cms integration will automatically handle the CMS initialization
+// by looking for a div with id="nc-root"
+---
+
+<Layout metadata={metadata}>
+  <div id="nc-root" class="min-h-screen"></div>
+</Layout>

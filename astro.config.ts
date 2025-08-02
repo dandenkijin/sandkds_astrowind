@@ -9,13 +9,14 @@ import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
 import compress from 'astro-compress';
 import type { AstroIntegration } from 'astro';
+import decapCMS from 'astro-decap-cms';
+import cmsConfig from './cms.config';
 
 import astrowind from './vendor/integration';
 
 import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin, lazyImagesRehypePlugin } from './src/utils/frontmatter';
 
 import svelte from '@astrojs/svelte';
-
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -27,7 +28,22 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
 export default defineConfig({
   output: 'static',
 
-  integrations: [sitemap(), mdx(), icon({
+  integrations: [
+    // Decap CMS integration
+    decapCMS({
+      // The path where the CMS will be available
+      adminPath: '/admin',
+      // Your CMS configuration
+      config: cmsConfig,
+      // Enable preview styles if needed
+      previewStyles: [
+        // Add any custom preview styles here
+      ],
+    }),
+    
+    sitemap(), 
+    mdx(), 
+    icon({
     include: {
       tabler: ['*'],
       'flat-color-icons': [
@@ -76,7 +92,5 @@ export default defineConfig({
         '~': path.resolve(__dirname, './src'),
       },
     },
-
-    // Tailwind v3: use standard PostCSS pipeline or import CSS directly. No tailwindcss() plugin here.
   },
 });

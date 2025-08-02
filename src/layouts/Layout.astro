@@ -16,11 +16,19 @@ import { ClientRouter } from 'astro:transitions';
 
 import type { MetaData as MetaDataType } from '~/types';
 
-export interface Props {
-  metadata?: MetaDataType;
+export interface Script {
+  src: string;
+  type?: string;
+  async?: boolean;
+  defer?: boolean;
 }
 
-const { metadata = {} } = Astro.props;
+export interface Props {
+  metadata?: MetaDataType;
+  scripts?: Script[];
+}
+
+const { metadata = {}, scripts = [] } = Astro.props;
 const { language, textDirection } = I18N;
 ---
 
@@ -39,6 +47,16 @@ const { language, textDirection } = I18N;
     <Metadata {...metadata} />
     <SiteVerification />
     <Analytics />
+
+    <!-- Scripts -->
+    {scripts.map((script) => (
+      <script 
+        src={script.src} 
+        type={script.type || 'application/javascript'}
+        async={script.async}
+        defer={script.defer}
+      />
+    ))}
 
     <!-- Comment the line below to disable View Transitions -->
     <ClientRouter fallback="swap" />
@@ -129,7 +147,7 @@ const { language, textDirection } = I18N;
 
       // Handle link clicks
       document.body.addEventListener('click', (e) => {
-        const target = e.target;
+        const target = e.target as HTMLElement | null;
         if (target && typeof target.closest === 'function') {
           const a = target.closest('a');
           if (a && a.href && a.origin === window.location.origin && !a.hasAttribute('target')) {

@@ -1,0 +1,21 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Local development with Netlify Dev
+local_backend: true
+
+# Media and public folders
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+# Collections
+collections:
+  - name: "blog"
+    label: "Blog"
+    folder: "src/content/blog"
+    create: true
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Body", name: "body", widget: "markdown" }

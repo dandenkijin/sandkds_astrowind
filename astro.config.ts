@@ -96,7 +96,15 @@ export default defineConfig({
     headers: {
       'Cache-Control': 'no-store, no-cache, must-revalidate',
       'Pragma': 'no-cache',
-      'Expires': '0'
+      'Expires': '0',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
+    // Required for TinaCMS
+    fs: {
+      allow: ['..', '../public', '../tina'],
+      strict: false
     }
   }
 });

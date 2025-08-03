@@ -1,110 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Content Manager</title>
-    
-    <!-- Load CSS first -->
-    <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/cms.css" />
-    <link rel="stylesheet" href="/admin/cms.css" />
-    
-    <style>
-      /* Loading and error states */
-      .loading, .error {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #fff;
-        z-index: 9999;
-        transition: opacity 0.3s ease;
-      }
-      
-      .error {
-        display: none;
-        background: #fff5f5;
-      }
-      
-      .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid rgba(0, 0, 0, 0.1);
-        border-radius: 50%;
-        border-top-color: #3182ce;
-        animation: spin 1s ease-in-out infinite;
-        margin-bottom: 1rem;
-      }
-      
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-      
-      .error-message {
-        max-width: 600px;
-        padding: 1.5rem;
-        margin: 1rem;
-        background: #fff5f5;
-        border: 1px solid #feb2b2;
-        border-radius: 0.375rem;
-        color: #e53e3e;
-      }
-      
-      .error-message h3 {
-        margin-top: 0;
-        color: #e53e3e;
-      }
-      
-      .error-details {
-        margin-top: 1rem;
-        padding: 0.75rem;
-        background: white;
-        border: 1px solid #feb2b2;
-        border-radius: 0.25rem;
-        font-family: monospace;
-        white-space: pre-wrap;
-        word-break: break-word;
-        font-size: 0.875rem;
-        color: #2d3748;
-      }
-    </style>
+    <title>TinaCMS</title>
   </head>
-  <body>
-    <!-- Loading state -->
-    <div class="loading">
-      <div class="spinner"></div>
-      <p>Loading CMS, please wait...</p>
-    </div>
-    
-    <!-- Error state (initially hidden) -->
-    <div class="error">
-      <div class="error-message">
-        <h3>Error Loading CMS</h3>
-        <p>An error occurred while loading the CMS. Please try again or contact support if the problem persists.</p>
-        <div class="error-details" id="error-details"></div>
-        <div style="margin-top: 1rem;">
-          <button id="retry-btn" style="padding: 0.5rem 1rem; background: #3182ce; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">
-            Try Again
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- CMS will be mounted here -->
-    <div id="nc-root"></div>
-    
-    <!-- Scripts will be loaded here -->
-    <div id="scripts"></div>
-    
-    <!-- Load Decap CMS -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-    
-    <!-- Load our custom initialization script -->
-    <script src="/admin/cms-clean.js"></script>
+
+  <!-- if development -->
+  <script type="module">
+    import RefreshRuntime from 'http://localhost:4001/@react-refresh'
+    RefreshRuntime.injectIntoGlobalHook(window)
+    window.$RefreshReg$ = () => {}
+    window.$RefreshSig$ = () => (type) => type
+    window.__vite_plugin_react_preamble_installed__ = true
+  </script>
+  <script type="module" src="http://localhost:4001/@vite/client"></script>
+  <script>
+  function handleLoadError() {
+    // Assets have failed to load
+    document.getElementById('root').innerHTML = '<style type="text/css"> #no-assets-placeholder body { font-family: sans-serif; font-size: 16px; line-height: 1.4; color: #333; background-color: #f5f5f5; } #no-assets-placeholder { max-width: 600px; margin: 0 auto; padding: 40px; text-align: center; background-color: #fff; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); } #no-assets-placeholder h1 { font-size: 24px; margin-bottom: 20px; } #no-assets-placeholder p { margin-bottom: 10px; } #no-assets-placeholder a { color: #0077cc; text-decoration: none; } #no-assets-placeholder a:hover { text-decoration: underline; } </style> <div id="no-assets-placeholder"> <h1>Failed loading TinaCMS assets</h1> <p> Your TinaCMS configuration may be misconfigured, and we could not load the assets for this page. </p> <p> Please visit <a href="https://tina.io/docs/tina-cloud/faq/#how-do-i-resolve-failed-loading-tinacms-assets-error">this doc</a> for help. </p> </div> </div>';
+  }
+  </script>
+  <script
+    type="module"
+    src="http://localhost:4001/src/main.tsx"
+    onerror="handleLoadError()"
+  ></script>
+  <body class="tina-tailwind">
+    <div id="root"></div>
   </body>
 </html>

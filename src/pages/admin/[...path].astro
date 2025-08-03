@@ -1,37 +1,38 @@
 ---
-// src/pages/admin/[...path].astro
-// This page serves the Decap CMS admin interface
-
-// Get the admin HTML file
-const adminHtml = await import.meta.glob('../../../public/admin/index.html', { as: 'raw', eager: true });
-const adminContent = adminHtml['../../../public/admin/index.html'];
-
-// In development, serve the admin interface directly
-if (import.meta.env.DEV) {
-  return new Response(adminContent, {
-    status: 200,
-    headers: {
-      'Content-Type': 'text/html',
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      'Pragma': 'no-cache',
-      'Expires': '0'
-    }
-  });
-}
-
-// In production, redirect to the static admin file
-return new Response(null, {
-  status: 302,
-  headers: {
-    'Location': '/admin/index.html'
-  }
-});
+// This file is used to serve the TinaCMS admin interface
+// It will be replaced during the build process by Tina's CLI
 ---
 
-  <div id="nc-root" class="min-h-screen">
-    <div style="padding: 2rem; max-width: 800px; margin: 0 auto; text-align: center;">
-      <h1>Loading CMS...</h1>
-      <p>If you see this message for more than a few seconds, check the browser console for errors.</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TinaCMS Admin</title>
+    <script src="https://unpkg.com/@tinacms/app@1.1.0/dist/index.js"></script>
+  </head>
+  <body>
+    <div id="tina-admin">
+      <h1>Loading TinaCMS Admin...</h1>
+      <p>If you see this message, ensure you're running the TinaCMS development server.</p>
     </div>
-  </div>
-</Layout>
+
+    <script>
+      // This will be replaced by Tina's build process
+      document.addEventListener('DOMContentLoaded', () => {
+        const { defineBasicPage } = window.TinaCMS;
+        const TinaAdmin = defineBasicPage({
+          cmsCallback: (cms) => {
+            // You can customize the CMS instance here if needed
+          },
+          query: ''
+        });
+        
+        const root = document.getElementById('tina-admin');
+        if (root) {
+          TinaAdmin.mount(root);
+        } else {
+          console.error('Could not find root element for TinaCMS');
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+---
+// This file redirects /admin to /admin/index.html
+export async function getStaticPaths() {
+  // Return a 301 redirect
+  return new Response(null, {
+    status: 301,
+    headers: {
+      'Location': '/admin/index.html'
+    }
+  });
+}
+---
+
+<!-- Fallback in case server-side redirect doesn't work -->
+<script>
+  // Client-side redirect as fallback
+  window.location.href = '/admin/index.html';
+</script>
+
+<noscript>
+  <meta http-equiv="refresh" content="0; url=/admin/index.html">
+  <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; margin-top: 2rem;">
+    <p>Redirecting to admin interface...</p>
+    <p>If you are not redirected, <a href="/admin/index.html">click here</a>.</p>
+  </div>
+</noscript>

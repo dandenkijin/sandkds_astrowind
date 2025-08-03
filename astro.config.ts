@@ -16,6 +16,11 @@ export default defineConfig({
   outDir: 'dist',
   publicDir: 'public',
   
+  // Add redirects
+  redirects: {
+    '/admin': '/admin/index.html'
+  },
+  
   // Integrations
   integrations: [
     sitemap(),

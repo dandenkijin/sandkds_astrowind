@@ -5,23 +5,18 @@ import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
 import compress from 'astro-compress';
 
-// This configuration ensures that the admin panel works correctly with Astro's static site generation
-// and handles SPA routing for the Decap CMS admin interface
-
-// CMS configuration has been moved to /public/admin/cms.js
-
 // Import custom plugins
 import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin, lazyImagesRehypePlugin } from './src/utils/frontmatter';
-
-// Import theme integration
 import astrowind from './vendor/integration';
-
-// Import Svelte integration
 import svelte from '@astrojs/svelte';
 
 export default defineConfig({
+  // Basic configuration
   output: 'static',
-
+  outDir: 'dist',
+  publicDir: 'public',
+  
+  // Integrations
   integrations: [
     sitemap(),
     mdx(),
@@ -29,45 +24,33 @@ export default defineConfig({
       include: {
         tabler: ['*'],
         'flat-color-icons': [
-          'template',
-          'gallery',
-          'approval',
-          'document',
-          'advertising',
-          'currency-exchange',
-          'voice-presentation',
-          'business-contact',
-          'database',
+          'template', 'gallery', 'approval', 'document',
+          'advertising', 'currency-exchange', 'voice-presentation',
+          'business-contact', 'database',
         ],
       },
     }),
     partytown({
-      config: {
-        forward: ['dataLayer.push'],
-      },
+      config: { forward: ['dataLayer.push'] },
     }),
     compress({
-      CSS: true, // Enable CSS compression
-      HTML: {
-        'html-minifier-terser': {
-          removeAttributeQuotes: false,
-        },
-      },
+      CSS: true,
+      HTML: { 'html-minifier-terser': { removeAttributeQuotes: false } },
       Image: false,
       JavaScript: true,
       SVG: false,
       Logger: 1,
     }),
-    astrowind({
-      config: './src/config.yaml',
-    }),
+    astrowind({ config: './src/config.yaml' }),
     svelte()
   ],
 
+  // Image handling
   image: {
     domains: ['cdn.pixabay.com'],
   },
 
+  // Markdown configuration
   markdown: {
     remarkPlugins: [readingTimeRemarkPlugin],
     rehypePlugins: [responsiveTablesRehypePlugin, lazyImagesRehypePlugin],
@@ -76,48 +59,44 @@ export default defineConfig({
   // Vite configuration
   vite: {
     build: {
-      // Ensure proper handling of static assets
-      assetsInlineLimit: 0
-    },
-    resolve: {
-      alias: {
-        '~': new URL('./src', import.meta.url).pathname
+      assetsInlineLimit: 0,
+      rollupOptions: {
+        output: {
+          entryFileNames: 'assets/[name].[hash].js',
+          chunkFileNames: 'assets/[name].[hash].js',
+          assetFileNames: 'assets/[name].[hash][extname]'
+        }
       }
     },
+    resolve: {
+      alias: { '~': new URL('./src', import.meta.url).pathname },
+      mainFields: ['browser', 'module', 'jsnext:main', 'jsnext']
+    },
     server: {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-        'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization'
-      },
-      fs: {
-        // Allow serving files from the admin directory
-        allow: ['..']
-      },
-      cors: true
+      fs: { allow: ['..', '../public'], strict: true },
+      cors: true,
+      strictPort: true,
+      hmr: {
+        protocol: 'ws',
+        host: '127.0.0.1',
+        port: 24678,
+        clientPort: 24678
+      }
     },
     optimizeDeps: {
-      // Ensure Vite properly optimizes dependencies
       include: ['@astrojs/mdx']
     }
   },
   
-  // Configure the dev server
+  // Development server configuration
   server: {
-    // Handle SPA routing for the admin panel
+    host: '0.0.0.0',
+    port: 4321,
+    open: '/admin',
     headers: {
-      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
       'Pragma': 'no-cache',
-      'Expires': '0',
-      'Surrogate-Control': 'no-store'
-    },
-    // Ensure /admin and /admin/ both serve index.html
-    open: '/admin'
-  },
-  
-  // Configure the output directory for the static build
-  outDir: 'dist',
-  
-  // Configure the public directory for static assets
-  publicDir: 'public',
+      'Expires': '0'
+    }
+  }
 });

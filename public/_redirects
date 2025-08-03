@@ -1,9 +1,2 @@
-# Handle client-side routing for the admin panel
-/admin/*  /admin/index.html  200
-
-# Handle the root /admin path (with and without trailing slash)
-/admin/    /admin/index.html  200
-/admin     /admin/index.html  200
-
-# Prevent direct access to index.html (redirect to clean URL)
-/admin/index.html  /admin  301
+# SPA fallback
+/*    /index.html   200

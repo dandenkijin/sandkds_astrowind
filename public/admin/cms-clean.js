@@ -3,7 +3,7 @@
  * This script handles the initialization of Decap CMS with proper loading states and error handling.
  */
 
-(function() {
+(() => {
   'use strict';
 
   // DOM Elements
@@ -11,7 +11,7 @@
   const errorElement = document.querySelector('.error');
   
   // Show loading state
-  function updateLoadingMessage(message) {
+  const updateLoadingMessage = (message) => {
     if (loadingElement) {
       const messageEl = loadingElement.querySelector('p:first-child') || document.createElement('p');
       messageEl.textContent = message;
@@ -20,10 +20,10 @@
       }
       console.log(`[CMS] ${message}`);
     }
-  }
+  };
 
   // Show error state
-  function showError(message, error = null) {
+  const showError = (message, error = null) => {
     console.error(`[CMS Error] ${message}`, error || '');
     
     if (loadingElement) {
@@ -38,10 +38,10 @@
         errorElement.appendChild(errorMessage);
       }
     }
-  }
+  };
 
   // Initialize the CMS with configuration
-  async function initializeCMS() {
+  const initializeCMS = async () => {
     try {
       updateLoadingMessage('Loading CMS configuration...');
       
@@ -66,7 +66,7 @@
       
       try {
         // Try to parse as YAML to validate
-        const yaml = window.jsyaml || (window.CMS && window.CMS.yaml) || null;
+        const yaml = window.jsyaml || window.CMS?.yaml || null;
         if (yaml) {
           const config = yaml.load(configText);
           console.log('[CMS] Config parsed successfully');

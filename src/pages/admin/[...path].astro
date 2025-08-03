@@ -1,23 +1,33 @@
 ---
-// src/pages/admin/[[...]].astro
+// src/pages/admin/[...path].astro
 // This page serves the Decap CMS admin interface
-import Layout from '../../layouts/Layout.astro';
 
-// Define metadata for the page
-const metadata = {
-  title: 'Admin | Sandkds CMS',
-  description: 'Content Management System for Sandkds',
-  canonical: '/admin',
-  noindex: true,
-  ogImage: {
-    src: '',
-    alt: 'Sandkds CMS',
-  },
-  article: false,
-};
+// Get the admin HTML file
+const adminHtml = await import.meta.glob('../../../public/admin/index.html', { as: 'raw', eager: true });
+const adminContent = adminHtml['../../../public/admin/index.html'];
+
+// In development, serve the admin interface directly
+if (import.meta.env.DEV) {
+  return new Response(adminContent, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
+  });
+}
+
+// In production, redirect to the static admin file
+return new Response(null, {
+  status: 302,
+  headers: {
+    'Location': '/admin/index.html'
+  }
+});
 ---
 
-<Layout metadata={metadata}>
   <div id="nc-root" class="min-h-screen">
     <div style="padding: 2rem; max-width: 800px; margin: 0 auto; text-align: center;">
       <h1>Loading CMS...</h1>

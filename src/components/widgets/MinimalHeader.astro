@@ -1,0 +1,54 @@
+---
+import { Icon } from 'astro-icon/components';
+import Logo from '~/components/Logo.astro';
+import ToggleTheme from '~/components/common/ToggleTheme.astro';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'header' } = Astro.props;
+---
+
+<header
+  id={id}
+  class="sticky top-0 z-50 w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm transition-colors duration-300"
+  aria-label="Main navigation"
+  data-astro-transition-persist="header"
+>
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center h-16 w-full" data-nav-content>
+      <!-- Logo -->
+      <a href="/" class="flex items-center">
+        <div class="text-2xl font-bold text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">
+          <Logo />
+        </div>
+      </a>
+
+      <!-- Navigation Links (add your navigation items here) -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <!-- Add your navigation links here -->
+        <!-- <a href="/about" class="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">About</a> -->
+      </nav>
+
+      <!-- Theme Toggle -->
+      <div class="flex items-center space-x-4">
+        <ToggleTheme iconClass="w-6 h-6 text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Run this code when the DOM is fully loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    const navContent = document.querySelector('[data-nav-content]');
+    
+    // Fade in content after a short delay
+    setTimeout(() => {
+      if (navContent) {
+        navContent.style.opacity = '1';
+      }
+    }, 100);
+  });
+</script>

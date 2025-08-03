@@ -21,7 +21,28 @@ const {
 
 {
   !(UI.theme && UI.theme.endsWith(':only')) && (
-    <button type="button" class={className} aria-label={label} data-aw-toggle-color-scheme>
+    <button
+      type="button"
+      class={className}
+      aria-label={label}
+      data-aw-toggle-color-scheme
+      onclick={`(function(){
+        try {
+          const root = document.documentElement;
+          const isDark = root.classList.contains('dark');
+          const next = isDark ? 'light' : 'dark';
+          // Persist choice
+          localStorage.theme = next;
+          // Apply class
+          if (next === 'dark') root.classList.add('dark');
+          else root.classList.remove('dark');
+          // Dispatch a custom event so listeners (e.g., SPA) can react
+          window.dispatchEvent(new CustomEvent('theme:changed', { detail: { theme: next }}));
+        } catch(e) {
+          console.warn('Theme toggle failed', e);
+        }
+      })()`}
+    >
       <Icon name={iconName} class={iconClass} />
     </button>
   )

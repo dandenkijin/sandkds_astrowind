@@ -16,48 +16,57 @@ const {
 } = Astro.props;
 ---
 
-<div class="w-full bg-gradient-to-r from-pink-200 via-[color:var(--aw-color-tertiary)] to-pink-200 py-16">
-  <WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${classes?.container ?? ''}`}>
+<!-- Rounded container with gradient background and faded edge masks -->
+<div class="relative w-full rounded-3xl overflow-hidden">
+  <!-- Background with gradient -->
+  <div class="absolute inset-0 -z-10 bg-gradient-to-r from-pink-200 via-[color:var(--aw-color-tertiary)] to-pink-200 dark:from-rose-900/40 dark:via-[color:var(--aw-color-tertiary)]/40 dark:to-rose-900/40"></div>
+
+  <!-- Top and bottom fade masks for seamless transition -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-white/80 dark:from-slate-900/80 to-transparent"></div>
+  <div class="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/80 dark:from-slate-900/80 to-transparent"></div>
+
+  <WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 ${classes?.container ?? ''}`}>
     <div class="text-white">
-    <Headline 
-      title={title} 
-      subtitle={subtitle} 
-      tagline={tagline} 
-      classes={{ 
-        container: 'text-center max-w-3xl mx-auto',
-        title: 'text-white',
-        subtitle: 'text-purple-100',
-        tagline: 'text-purple-300'
-      }} 
-    />
-    <div class="flex flex-wrap justify-center -mx-2 mt-6">
-      {
-        stats &&
-        stats.map(({ amount, title, icon, description }) => (
-          <div class="p-6 md:w-auto w-1/2 text-center hover:bg-purple-800/30 transition-all duration-300 rounded-lg m-1.5 transform hover:scale-105">
-            {icon && (
-              <div class="flex items-center justify-center mx-auto mb-4 text-purple-300">
-                <Icon name={icon} class="w-8 h-8" />
-              </div>
-            )}
-            {amount && (
-              <div class="font-heading text-white text-4xl font-bold md:text-5xl">
-                {amount}
-              </div>
-            )}
-            {title && (
-              <div class="text-base font-medium uppercase tracking-wider text-purple-200 mt-2">
-                {title}
-              </div>
-            )}
-            {description && (
-              <div class="mt-3 text-base text-purple-100 font-normal max-w-[220px] mx-auto leading-relaxed">
-                {description}
-              </div>
-            )}
-          </div>
-        ))
-      }
+      <Headline
+        title={title}
+        subtitle={subtitle}
+        tagline={tagline}
+        classes={{
+          container: 'text-center max-w-3xl mx-auto',
+          title: 'text-white',
+          subtitle: 'text-purple-100',
+          tagline: 'text-purple-300'
+        }}
+      />
+      <div class="flex flex-wrap justify-center -mx-2 mt-6">
+        {
+          stats &&
+          stats.map(({ amount, title, icon, description }) => (
+            <div class="p-6 md:w-auto w-1/2 text-center hover:bg-purple-800/30 transition-all duration-300 rounded-xl m-1.5 transform hover:scale-105">
+              {icon && (
+                <div class="flex items-center justify-center mx-auto mb-4 text-purple-300">
+                  <Icon name={icon} class="w-8 h-8" />
+                </div>
+              )}
+              {amount && (
+                <div class="font-heading text-white text-4xl font-bold md:text-5xl">
+                  {amount}
+                </div>
+              )}
+              {title && (
+                <div class="text-base font-medium uppercase tracking-wider text-purple-200 mt-2">
+                  {title}
+                </div>
+              )}
+              {description && (
+                <div class="mt-3 text-base text-purple-100 font-normal max-w-[220px] mx-auto leading-relaxed">
+                  {description}
+                </div>
+              )}
+            </div>
+          ))
+        }
+      </div>
     </div>
   </WidgetWrapper>
 </div>

@@ -18,6 +18,7 @@
     <script>
       // This will be replaced by Tina's build process
       document.addEventListener('DOMContentLoaded', () => {
+        // @ts-ignore - TinaCMS is added to window by the script tag
         const { defineBasicPage } = window.TinaCMS;
         const TinaAdmin = defineBasicPage({
           cmsCallback: (cms) => {

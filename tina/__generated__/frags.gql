@@ -1,8 +1,21 @@
 fragment PostParts on Post {
   __typename
   title
-  description
-  pubDate
+  excerpt
+  publishDate
+  updateDate
   draft
+  image
+  category
+  author
+  tags
+  body
+}
+
+fragment PageParts on Page {
+  __typename
+  title
+  description
+  hero_image
   body
 }

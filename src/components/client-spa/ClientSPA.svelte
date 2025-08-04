@@ -46,7 +46,7 @@
       title: 'Birth Doula Services', 
       description: 'Empowering, continuous support through your labor and delivery for a confident birth experience.',
       icon: 'tabler:home',
-      image: '/src/assets/images/doula_and_mom_and_ball.png',
+      image: '/images/doula_and_mom_and_ball.png',
       imageAlt: 'Birth doula supporting a mother during labor'
     },
     { 
@@ -54,7 +54,7 @@
       title: 'Postpartum Care', 
       description: 'Compassionate support for new parents during the transformative postpartum period.',
       icon: 'tabler:heart-handshake',
-      image: '/src/assets/images/doula_baby_mom.png',
+      image: '/images/doula_baby_mom.png',
       imageAlt: 'Mother and newborn bonding during postpartum'
     },
     { 
@@ -62,7 +62,7 @@
       title: 'Lactation Support', 
       description: 'Expert guidance and support for successful breastfeeding and lactation.',
       icon: 'tabler:users',
-      image: '/src/assets/images/lacsup_mom-baby.jpg',
+      image: '/images/lacsup_mom-baby.jpg',
       imageAlt: 'Mother breastfeeding her baby with support'
     },
     { 
@@ -70,7 +70,7 @@
       title: 'Sleep Coaching', 
       description: 'Gentle, evidence-based strategies to help your baby and family get the rest you need.',
       icon: 'tabler:book',
-      image: '/src/assets/images/sleep-coaching.png',
+      image: '/images/sleep-coaching.png',
       imageAlt: 'Peacefully sleeping baby'
     },
     { 
@@ -78,7 +78,7 @@
       title: 'Prenatal Education', 
       description: 'Comprehensive classes to prepare you for childbirth, newborn care, and early parenthood.',
       icon: 'tabler:users',
-      image: '/src/assets/images/prenatal-education.png',
+      image: '/images/prenatal-education.png',
       imageAlt: 'Group prenatal class in session'
     },
     { 
@@ -86,7 +86,7 @@
       title: 'Virtual Doula Support', 
       description: 'Professional doula support available wherever you are through virtual consultations.',
       icon: 'tabler:heart-broken',
-      image: '/src/assets/images/virtual-support.png',
+      image: '/images/virtual-support.png',
       imageAlt: 'Virtual doula consultation on a laptop'
     }
   ];

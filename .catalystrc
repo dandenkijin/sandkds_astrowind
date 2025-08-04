@@ -1,0 +1,30 @@
+{
+  "defaults": {
+    "project": 1,
+    "env": 1
+  },
+  "actives": {
+    "project": 1,
+    "env": 1
+  },
+  "projects": [
+    {
+      "idx": 1,
+      "id": "33838000000011109",
+      "name": "Snugs-and-KissesDS",
+      "domain": {
+        "id": "10102308607",
+        "name": "snugs-and-kissesds-894632959.development"
+      },
+      "timezone": "America/New_York",
+      "env": [
+        {
+          "idx": 1,
+          "id": "894632959",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}

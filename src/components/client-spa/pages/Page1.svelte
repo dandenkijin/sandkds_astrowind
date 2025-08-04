@@ -4,10 +4,9 @@
   import FeaturesGrid from '../../flowbite/FeaturesGrid.svelte';
   import ContentCard from '../../flowbite/ContentCard.svelte';
   
-  // Import the image using Astro's asset handling
-  import heroImage from '/src/assets/images/doula_mountain_h_singlton_imrs.avif';
-  import cardImage from '/src/assets/images/care_items_robe_slippers.png';
-  const heroImageUrl = heroImage;
+  // Image paths in the public directory
+  const heroImageUrl = '/images/doula_mountain_h_singlton_imrs.avif';
+  const cardImage = '/images/care_items_robe_slippers.png';
   
   // Page 1 specific data
   const pageData = {

@@ -13,7 +13,7 @@
   const lactationPageData = {
     title: 'Lactation Support',
     description: 'Gentle, expert guidance for breastfeeding, pumping, and all your feeding goals.',
-    heroImage: '/src/assets/images/Breastfeeding-support-group-updated.avif',
+    heroImage: '/images/Breastfeeding-support-group-updated.avif',
     icon: 'tabler:droplet-filled',
     ctaText: 'Get Breastfeeding Support',
     ctaLink: '/services/lactation',

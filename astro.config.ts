@@ -1,7 +1,9 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
+/* partytown disabled in dev; uncomment when enabling
 import partytown from '@astrojs/partytown';
+*/
 import icon from 'astro-icon';
 import compress from 'astro-compress';
 
@@ -12,14 +14,18 @@ import svelte from '@astrojs/svelte';
 
 export default defineConfig({
   // Basic configuration
-  output: 'static',
+  output: 'static', // Changed from 'server' to 'static' for SSG
   outDir: 'dist',
   publicDir: 'public',
+  // Remove the Node.js adapter since we're using static site generation
+  // adapter: node({
+  //   mode: 'standalone'
+  // }),
   
-  // Add redirects
-  redirects: {
-    '/admin': '/admin/index.html'
-  },
+  // Remove Astro-level redirects for /admin to avoid loops; rely on Netlify/static serving
+  // redirects: {
+  //   '/admin': '/admin/index.html'
+  // },
   
   // Integrations
   integrations: [
@@ -35,9 +41,11 @@ export default defineConfig({
         ],
       },
     }),
-    partytown({
-      config: { forward: ['dataLayer.push'] },
-    }),
+    // Disable Partytown in dev to avoid 404 on /~partytown/* when no worker assets are served by dev server.
+    // Partytown can still be enabled in production by moving this block under a conditional if needed.
+    // partytown({
+    //   config: { forward: ['dataLayer.push'] },
+    // }),
     compress({
       CSS: true,
       HTML: { 'html-minifier-terser': { removeAttributeQuotes: false } },
@@ -64,21 +72,63 @@ export default defineConfig({
   // Vite configuration
   vite: {
     build: {
+      // Keep assets as separate files (don't inline them)
       assetsInlineLimit: 0,
       rollupOptions: {
         output: {
+          // Use a consistent naming pattern for all assets
           entryFileNames: 'assets/[name].[hash].js',
           chunkFileNames: 'assets/[name].[hash].js',
-          assetFileNames: 'assets/[name].[hash][extname]'
+          assetFileNames: (assetInfo) => {
+            // Safely handle cases where name might be undefined
+            if (!assetInfo.name) {
+              return 'assets/[name].[hash][extname]';
+            }
+            
+            const info = assetInfo.name.split('.');
+            const ext = info[info.length - 1].toLowerCase();
+            
+            // Handle CSS files - use consistent naming without hash for main CSS
+            if (ext === 'css') {
+              if (assetInfo.name.includes('client')) {
+                return 'assets/client.css';
+              }
+              if (assetInfo.name.includes('index')) {
+                return 'assets/index.css';
+              }
+              return 'assets/[name].[hash][extname]';
+            }
+            
+            // Handle image files
+            if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'avif'].includes(ext)) {
+              return 'images/[name][extname]';
+            }
+            
+            // Default for other assets
+            return 'assets/[name].[hash][extname]';
+          }
         }
-      }
+      },
+      minify: 'esbuild',
+      cssMinify: true,
+      sourcemap: true,
+      cssTarget: 'esnext',
+      // Disable CSS code splitting to ensure all styles are in one file
+      cssCodeSplit: false,
+      // Ensure consistent asset handling
+      chunkSizeWarningLimit: 1000 // Increase chunk size warning limit
     },
+    // Ensure public assets are copied correctly
+    publicDir: 'public',
     resolve: {
       alias: { '~': new URL('./src', import.meta.url).pathname },
       mainFields: ['browser', 'module', 'jsnext:main', 'jsnext']
     },
     server: {
-      fs: { allow: ['..', '../public'], strict: true },
+      fs: { 
+        allow: ['..', '../public', '../tina'], 
+        strict: false 
+      },
       cors: true,
       strictPort: true,
       hmr: {
@@ -90,6 +140,15 @@ export default defineConfig({
     },
     optimizeDeps: {
       include: ['@astrojs/mdx']
+    },
+    css: {
+      devSourcemap: true,
+      preprocessorOptions: {
+        scss: {}
+      },
+      modules: {
+        localsConvention: 'camelCaseOnly'
+      }
     }
   },
   
@@ -105,11 +164,6 @@ export default defineConfig({
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    },
-    // Required for TinaCMS
-    fs: {
-      allow: ['..', '../public', '../tina'],
-      strict: false
     }
   }
 });

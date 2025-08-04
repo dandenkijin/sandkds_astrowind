@@ -8,7 +8,6 @@ import Features from '~/components/widgets/Features.astro';
 import Content from '~/components/widgets/Content.astro';
 
 import { headerData } from '~/navigation';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 import babyOnCounter from '~/assets/images/baby_on_counter.png';
 import dadImage from '~/assets/images/dad_infant_park.png';
 import motherAndKids from '~/assets/images/mother_kids_blocks_rug_sunlight.png';
@@ -52,7 +51,7 @@ const metadata = {
     <Hero2
       tagline="Partner With Us to Support Every Family, Fully"
       actions={[
-      { variant: 'primary', target: '_blank', text: 'Get Started', href: 'https://github.com/onwidget/astrowind' },
+      { variant: 'primary', target: '_blank', text: 'Get Started', href: '/contact' },
       { text: 'Learn more', href: '#features' },
     ]}
     image={{
@@ -325,16 +324,4 @@ const metadata = {
       <div class="absolute inset-0 bg-rose-50 dark:bg-rose-950/20"></div>
     </Fragment>
   </Features2>
-
-  <!-- BlogLatestPost Widget **************** -->
-
-  <BlogLatestPosts
-    id="blog"
-    title="Stay informed with AstroWind's blog"
-    information={`Explore our collection of articles, guides, and tutorials on web development, design trends, and using AstroWind effectively for your projects.`}
-  >
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-rose-50 dark:bg-rose-950/20"></div>
-    </Fragment>
-  </BlogLatestPosts>
 </Layout>

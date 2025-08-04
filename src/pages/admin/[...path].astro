@@ -1,39 +1,27 @@
 ---
-// This file is used to serve the TinaCMS admin interface
-// It will be replaced during the build process by Tina's CLI
+/**
+ * Remove meta redirects to prevent loops.
+ * Keep a simple static fallback for unknown /admin/* routes.
+ */
+export const prerender = true;
+
+export function getStaticPaths() {
+  // Do not enumerate index to avoid special-case redirect behavior
+  return [
+    { params: { path: undefined }, props: {} }, // /admin
+  ];
+}
 ---
-
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <title>TinaCMS Admin</title>
-    <script src="https://unpkg.com/@tinacms/app@1.1.0/dist/index.js"></script>
+    <meta charset="utf-8" />
+    <title>Tina Admin Fallback</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-  <body>
-    <div id="tina-admin">
-      <h1>Loading TinaCMS Admin...</h1>
-      <p>If you see this message, ensure you're running the TinaCMS development server.</p>
-    </div>
-
-    <script>
-      // This will be replaced by Tina's build process
-      document.addEventListener('DOMContentLoaded', () => {
-        // @ts-ignore - TinaCMS is added to window by the script tag
-        const { defineBasicPage } = window.TinaCMS;
-        const TinaAdmin = defineBasicPage({
-          cmsCallback: (cms) => {
-            // You can customize the CMS instance here if needed
-          },
-          query: ''
-        });
-        
-        const root = document.getElementById('tina-admin');
-        if (root) {
-          TinaAdmin.mount(root);
-        } else {
-          console.error('Could not find root element for TinaCMS');
-        }
-      });
-    </script>
+  <body style="font-family: system-ui, -apple-system, sans-serif; text-align:center; padding:2rem">
+    <h1>Tina Admin</h1>
+    <p>This is a static fallback for admin routes.</p>
+    <p>Open <a href="/admin/index.html">/admin/index.html</a> for the admin UI.</p>
   </body>
 </html>

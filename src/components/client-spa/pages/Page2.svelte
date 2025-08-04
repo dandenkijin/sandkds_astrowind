@@ -5,8 +5,8 @@
   import FeaturesGrid from '../../flowbite/FeaturesGrid.svelte'; // Using FeaturesGrid from Flowbite
   import ContentCard from '../../flowbite/ContentCard.svelte';
   import Features from '../../flowbite/Features.svelte';
-  // Import the image using Astro's asset handling
-  import cardImage from '/src/assets/images/postpartum_scene_breakfast_mom_doula_dad.png';
+  // Image paths in the public directory
+  const cardImage = '/images/postpartum_scene_breakfast_mom_doula_dad.png';
   
   // helper for consistent project button styles on actions
   const toProjectButton = (label, href = '#', variant = 'primary') => ({
@@ -20,7 +20,7 @@
   const pageData = {
     title: 'Postpartum Doula Care',
     description: 'Nurturing care for your "fourth trimester", helping you rest, recover, and bond with your baby.',
-    heroImage: '/src/assets/images/historical_doula.png',
+    heroImage: '/images/historical_doula.png',
     icon: 'tabler:heart-handshake',
     ctaText: 'Learn About Our Postpartum Services',
     ctaLink: '/services/postpartum',

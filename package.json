@@ -1,20 +1,21 @@
 {
-  "name": "",
+  "name": "SandKDS AstroWind",
   "version": "1.0.0-beta.52",
-  "description": "AstroWind: A free template using Astro 5.0 and Tailwind CSS. Astro starter theme.",
+  "description": "Front end for Snugs and Kisses Doula Services",
   "type": "module",
   "engines": {
     "node": "^18.17.1 || ^20.3.0 || >= 21.0.0"
   },
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
+    "start": "astro preview",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "tina-dev": "tinacms dev -c \"astro dev\"",
     "tina-build": "tinacms build && astro build",
     "tina-generate": "tinacms schema:types",
+    "serve": "node ./dist/server/entry.mjs",
     "check": "npm run check:astro && npm run check:eslint && npm run check:prettier",
     "check:astro": "astro check",
     "check:eslint": "eslint .",
@@ -24,6 +25,7 @@
     "fix:prettier": "prettier -w ."
   },
   "dependencies": {
+    "@astrojs/node": "^9.3.3",
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.4.1",
     "@astrojs/svelte": "^7.1.0",

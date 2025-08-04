@@ -1,9 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
-/* partytown disabled in dev; uncomment when enabling
-import partytown from '@astrojs/partytown';
-*/
 import icon from 'astro-icon';
 import compress from 'astro-compress';
 
@@ -41,11 +38,14 @@ export default defineConfig({
         ],
       },
     }),
-    // Disable Partytown in dev to avoid 404 on /~partytown/* when no worker assets are served by dev server.
-    // Partytown can still be enabled in production by moving this block under a conditional if needed.
-    // partytown({
-    //   config: { forward: ['dataLayer.push'] },
-    // }),
+    // Enable Partytown only in production builds to avoid dev 404s on /~partytown/*
+    ...(process.env.NODE_ENV === 'production'
+      ? [
+          (await import('@astrojs/partytown')).default({
+            config: { forward: ['dataLayer.push'] },
+          }),
+        ]
+      : []),
     compress({
       CSS: true,
       HTML: { 'html-minifier-terser': { removeAttributeQuotes: false } },
@@ -167,3 +167,5 @@ export default defineConfig({
     }
   }
 });
+
+

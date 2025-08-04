@@ -1,27 +1,61 @@
 ---
 /**
- * Remove meta redirects to prevent loops.
- * Keep a simple static fallback for unknown /admin/* routes.
+ * Admin route handler (static build-friendly):
+ * - Emits the Tina SPA HTML at /admin (base path) directly at build/runtime.
+ * - Does NOT intercept /admin/assets/* so static JS/CSS are always served by the file server.
+ * - Keeps a simple fallback for other unknown /admin/* paths (non-assets).
+ *
+ * IMPORTANT: For static output, dynamic routes MUST export getStaticPaths.
+ * We emit ONLY the base `/admin` path at build.
  */
 export const prerender = true;
 
+// Minimal getStaticPaths for a catch-all route with only base `/admin`
 export function getStaticPaths() {
-  // Do not enumerate index to avoid special-case redirect behavior
-  return [
-    { params: { path: undefined }, props: {} }, // /admin
-  ];
+  // Using `path: undefined` matches the base `/admin` with no segments
+  return [{ params: { path: undefined } }];
 }
+
+// Astro.params types do not know our `path` key by default for a catch-all route.
+// Safely read and normalize it as a string.
+const rawParam = (Astro.params as Record<string, unknown>)?.path;
+const pathParam = Array.isArray(rawParam)
+  ? rawParam.join('/')
+  : (rawParam as string | undefined) ?? '';
+
+// If request is for admin assets, defer to static file serving by returning 404 here.
+if (pathParam.startsWith('assets/')) {
+  return new Response(null, { status: 404 });
+}
+
+// If request is EXACTLY /admin, serve the Tina SPA HTML from public/admin/index.html.
+// Use filesystem APIs rather than fetch (fetch fails in SSR build).
+if (!pathParam) {
+  // Read SPA HTML from project filesystem
+  // NOTE: Using dynamic import to avoid ESM top-level import constraints in Astro page script.
+  const fs = await import('node:fs/promises');
+  const path = await import('node:path');
+  const spaPath = path.join(process.cwd(), 'public', 'admin', 'index.html');
+  const spaHtml = await fs.readFile(spaPath, 'utf8');
+
+  return new Response(spaHtml, {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  });
+}
+
+// For any other /admin/* path (non-assets), render a minimal helper page.
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Tina Admin Fallback</title>
+    <title>Tina Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body style="font-family: system-ui, -apple-system, sans-serif; text-align:center; padding:2rem">
     <h1>Tina Admin</h1>
-    <p>This is a static fallback for admin routes.</p>
-    <p>Open <a href="/admin/index.html">/admin/index.html</a> for the admin UI.</p>
+    <p>If this page is shown, the SPA entry is <a href="/admin/index.html">/admin/index.html</a>.</p>
+    <p>Assets at <code>/admin/assets/*</code> are served statically; this route will not handle them.</p>
   </body>
 </html>

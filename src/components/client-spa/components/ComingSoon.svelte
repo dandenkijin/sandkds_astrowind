@@ -4,8 +4,8 @@
   
   export let title = 'Coming Soon';
   export let description = 'We\'re working hard to bring you this content. Please check back later!';
-  export let ctaText = 'Return Home';
-  export let ctaLink = '/';
+  export let ctaText = 'More info';
+  export let ctaLink = '/client#features';
   
   let currentPage = '';
   

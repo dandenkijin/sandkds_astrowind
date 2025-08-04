@@ -1,6 +1,10 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import * as THREE from 'three';
+  import { onMount, onDestroy } from 'svelte';
+  import Button from '../client-spa/components/Button.svelte';
+  
+  // Import Three.js dynamically to avoid SSR issues
+  import type * as ThreeType from 'three';
+  let THREE: typeof ThreeType;
   
   // Refs
   let canvasContainer: HTMLDivElement;
@@ -10,7 +14,7 @@
   let isHovered = false;
   
   // Particle system
-  let particles: THREE.Points;
+  let particles: ThreeType.Points<ThreeType.BufferGeometry, ThreeType.Material | ThreeType.Material[]> | null = null;
   let particlePositions: Float32Array;
   let particleSpeeds: Array<{
     x: number;
@@ -23,7 +27,33 @@
     speed: number;
   }> = [];
   let particleSizes: Float32Array;
-  // Fewer particles with stronger motion
+  
+  // Animation frame ID for cleanup
+  let animationFrameId: number | null = null;
+  
+  // Mouse position tracking
+  let mouseX = 0;
+  let mouseY = 0;
+  
+  // Mouse move handler
+  function onMouseMove(event: MouseEvent) {
+    if (!particles) return;
+    
+    // Update mouse position (normalized to -1 to 1)
+    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+  }
+  
+  // Button hover effects
+  function onHoverStart() {
+    isHovered = true;
+  }
+  
+  function onHoverEnd() {
+    isHovered = false;
+  }
+  
+  // Initialize particle count based on device capabilities
   let PARTICLE_COUNT = 50;
   if (typeof window !== 'undefined') {
     const dpr = Math.min(window.devicePixelRatio || 1, 4);
@@ -68,28 +98,19 @@
     }
   }
   
-  // Navigation
-  function navigateTo(route: string) {
-    window.location.href = `/${route}`;
-  }
-  
-  // Handle hover events
-  function onHoverStart() {
-    isHovered = true;
-  }
-  
-  function onHoverEnd() {
-    isHovered = false;
-  }
+
 
   // Helper type for HSL to avoid any
   type HSL = { h: number; s: number; l: number };
 
   // Initialize Three.js scene with particle system
-  onMount(() => {
+  onMount(async () => {
     // Only run on client side
     if (typeof window === 'undefined') return;
-
+    
+    // Dynamically import Three.js on the client side
+    THREE = await import('three');
+    
     // Guard against duplicate inits during HMR
     if (canvasContainer?.firstChild) {
       try {
@@ -476,8 +497,20 @@
     };
   });
   
+  // Clean up on component destroy
+  onDestroy(() => {
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
+    
+    // Clean up event listeners
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('mousemove', onMouseMove);
+    }
+  });
+  
   // Function to create a simple particle system
-  function createParticleSystem(scene: THREE.Scene) {
+  function createParticleSystem(scene: ThreeType.Scene) {
     // This function is no longer needed as we create particles in the main setup
     // Keeping it as a placeholder in case we want to add more particle systems later
   }
@@ -486,49 +519,26 @@
 <!-- Only render the 3D scene on the client side -->
 <!-- No need for dynamic imports in the head, we'll handle it in the component -->
 
-<div class="container">
-  <!-- 3D Canvas Container -->
-  <div 
-    bind:this={canvasContainer} 
-    class="canvas-container"
-  ></div>
-  
-  <!-- Content Overlay -->
-  <div class="content">
-    <div class="inner-content">
-      <h1 class="title responsive-title">
+<div class="home-spa-container">
+  <div class="home-spa-canvas-container" bind:this={canvasContainer}></div>
+  <div class="home-spa-content">
+    <div class="home-spa-inner-content">
+      <h1 class="home-spa-title responsive-title">
         Welcome to Snugs & Kisses Doula Services
       </h1>
-      <p class="subtitle">
+      <p class="home-spa-subtitle">
         Your journey to personalized family services begins here.
       </p>
       
-      <div class="button-container">
-        <!-- Inline full Tailwind tokens for immediate styling (primary + tertiary) -->
-        <a
-          role="button"
-          tabindex="0"
-          href="/corporate"
-          on:click|preventDefault={() => navigateTo('corporate')}
-          on:mouseenter={onHoverStart}
-          on:mouseleave={onHoverEnd}
-          class="inline-flex items-center justify-center cursor-pointer select-none px-8 py-3 text-lg rounded-full shadow-lg transition-transform duration-300 hover:scale-105
-                 border border-slate-200/70 bg-white/90 text-slate-800 hover:bg-white hover:border-white hover:shadow-white/20
-                 dark:bg-slate-800/90 dark:text-slate-100 dark:border-slate-700 hover:dark:bg-slate-800"
-        >
+      <div class="home-spa-button-container">
+        <a href="/corporate" class="home-spa-btn secondary" 
+           on:mouseenter={() => isHovered = true}
+           on:mouseleave={() => isHovered = false}>
           Corporate Services
         </a>
-        <a
-          role="button"
-          tabindex="0"
-          href="/client"
-          on:click|preventDefault={() => navigateTo('client')}
-          on:mouseenter={onHoverStart}
-          on:mouseleave={onHoverEnd}
-          class="inline-flex items-center justify-center cursor-pointer select-none px-8 py-3 text-lg rounded-full shadow-lg transition-transform duration-300 hover:scale-105
-                 bg-primary text-white border border-primary/80 hover:bg-primary/90 hover:shadow-primary/20
-                 dark:bg-primary dark:text-white dark:border-primary/70 hover:dark:bg-primary/90"
-        >
+        <a href="/client" class="home-spa-btn primary"
+           on:mouseenter={() => isHovered = true}
+           on:mouseleave={() => isHovered = false}>
           Client Services
         </a>
       </div>
@@ -538,14 +548,14 @@
 
 <style lang="postcss">
   /* Scoped styles for this component */
-  .container {
+  .home-spa-container {
     @apply relative w-full h-full min-h-[calc(100vh-64px)] pt-16 bg-white dark:bg-slate-900;
     position: relative;
     z-index: 1;
   }
 
   /* Preload gradient: visible immediately before WebGL initializes */
-  .container::before {
+  .home-spa-container::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -557,7 +567,7 @@
   }
 
   /* Add a soft pinkish gradient overlay behind the canvas for extra depth */
-  .canvas-container::before {
+  .home-spa-canvas-container::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -567,27 +577,20 @@
     box-shadow: inset 0 0 180px rgba(255, 192, 203, 0.20);
   }
   
-  .canvas-container {
+  .home-spa-canvas-container {
     @apply absolute inset-0 -z-10; /* Position behind content */
     /* Ensure the preloaded gradient shows while canvas is not yet painted */
     background: radial-gradient(60% 60% at 50% 40%, rgba(255, 192, 203, 0.42), rgba(245, 182, 204, 0.28), rgba(255, 255, 255, 0));
+    animation: home-spa-fade-in 600ms ease-out 0ms both;
   }
   
-  .content {
+  .home-spa-content {
     @apply relative z-10 min-h-screen flex items-center justify-center p-4;
     /* Fade-in animation for the SPA content */
-    animation: spa-fade-in 700ms ease-out 60ms both;
+    animation: home-spa-fade-in 700ms ease-out 60ms both;
   }
 
-  /* Optional: fade-in for canvas as well for a cohesive intro */
-  .canvas-container {
-    @apply absolute inset-0 -z-10; /* Position behind content */
-    /* Ensure the preloaded gradient shows while canvas is not yet painted */
-    background: radial-gradient(60% 60% at 50% 40%, rgba(255, 192, 203, 0.42), rgba(245, 182, 204, 0.28), rgba(255, 255, 255, 0));
-    animation: spa-fade-in 600ms ease-out 0ms both;
-  }
-
-  @keyframes spa-fade-in {
+  @keyframes home-spa-fade-in {
     0% {
       opacity: 0;
       transform: translateY(8px) scale(0.995);
@@ -605,51 +608,101 @@
     }
   }
   
-  .inner-content {
+  .home-spa-inner-content {
     @apply text-center max-w-2xl mx-auto px-4;
     color: #a11d3f; /* wine-leaning base tint */
   }
   
-  .title {
-    /* Rose/wine tone on light background */
-    @apply text-4xl md:text-9xl mb-6;
-    color: #9f1239; /* rose-900 */
+  .home-spa-title {
+    @apply text-4xl md:text-6xl font-bold text-center mb-4 text-slate-900 dark:text-white;
     font-family: var(--aw-font-heading, 'Dancing Script'), cursive;
-    font-weight: 600;
-    /* Enhanced multi-layer text shadow for readability over gradient */
-    text-shadow:
-      0 2px 6px rgba(159, 18, 57, 0.25),
-      0 8px 24px rgba(159, 18, 57, 0.18),
-      0 1px 0 rgba(255,255,255,0.6); /* subtle highlight for crisp edges */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1.2;
+    margin-bottom: 1rem;
   }
   
-  .subtitle {
+  .home-spa-subtitle {
     @apply text-xl md:text-2xl mb-8 max-w-lg mx-auto italic;
     color: #be123c; /* rose-700 */
     font-family: var(--aw-font-heading, 'Dancing Script'), cursive;
     font-weight: 500;
-    /* Match title shadow for better readability over stronger gradient */
     text-shadow:
       0 2px 6px rgba(159, 18, 57, 0.25),
       0 8px 24px rgba(159, 18, 57, 0.18),
       0 1px 0 rgba(255,255,255,0.6);
   }
   
-  .button-container {
-    @apply flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center;
+  .home-spa-button-container {
+    @apply flex flex-wrap justify-center gap-6 mt-8 font-sans;
+    position: relative;
+    z-index: 10;
   }
-  /* Ensure anchors render as buttons with no underline in this scope */
-  .button-container a {
+  
+  .home-spa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.5rem;
+    font-weight: 500;
+    text-align: center;
+    font-size: 1.125rem;
+    line-height: 1.25rem;
+    transition: all 0.2s ease-in-out;
+    padding: 0.75rem 2rem;
+    cursor: pointer;
     text-decoration: none;
+    white-space: nowrap;
+    min-width: 180px;
+    font-family: var(--aw-font-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif);
+  }
+  
+  /* Primary button style */
+  .home-spa-btn.primary {
+    background-color: var(--aw-color-primary, #E8B4B8);
+    border: none;
+    color: var(--aw-color-text-heading, #404040);
+  }
+  
+  .home-spa-btn.primary:hover:not(:disabled) {
+    background-color: var(--aw-color-secondary, #D48A8F);
+    border-color: var(--aw-color-secondary, #D48A8F);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Secondary button style */
+  .home-spa-btn.secondary {
+    background-color: var(--aw-color-bg-page, #FFFDFA);
+    border: none;
+    color: var(--aw-color-text-default, #595959);
+    box-shadow: 0 0 0 1px var(--aw-color-primary, #E8B4B8);
+  }
+  
+  .home-spa-btn.secondary:hover:not(:disabled) {
+    background-color: var(--aw-color-accent, #FFDADD);
+    box-shadow: 0 0 0 1px var(--aw-color-secondary, #D48A8F);
+    transform: translateY(-1px);
+  }
+  
+  /* Focus state */
+  .home-spa-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--aw-color-accent, #FFDADD);
+    border-color: var(--aw-color-secondary, #D48A8F);
+  }
+  
+  /* Active state */
+  .home-spa-btn:active:not(:disabled) {
+    transform: translateY(0);
   }
   
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .title {
+    .home-spa-title {
       @apply text-4xl;
     }
     
-    .subtitle {
+    .home-spa-subtitle {
       @apply text-xl;
     }
   }

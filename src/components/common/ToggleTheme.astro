@@ -21,11 +21,10 @@ const {
       type="button"
       class={className}
       aria-label={label}
-      onclick={`
+      onclick="
         const root = document.documentElement;
         const isDark = root.classList.contains('dark');
         
-        // Toggle theme
         if (isDark) {
           root.classList.remove('dark');
           localStorage.theme = 'light';
@@ -35,31 +34,19 @@ const {
           localStorage.theme = 'dark';
           this.querySelector('svg').setAttribute('name', 'tabler:sun');
         }
-        
-        // Dispatch event for other components
-        window.dispatchEvent(new CustomEvent('theme:changed', {
-          detail: { theme: isDark ? 'light' : 'dark' }
-        }));
-      `}
+      "
     >
-      <Icon name="tabler:moon" class={iconClass} data-theme-icon />
+      <Icon name="tabler:moon" class={iconClass} />
       <script is:inline>
-        // Initialize icon on load
-        function updateThemeIcon() {
+        // Initialize icon on page load
+        document.addEventListener('DOMContentLoaded', () => {
           const root = document.documentElement;
           const isDark = root.classList.contains('dark');
-          const icons = document.querySelectorAll('[data-theme-icon]');
+          const icons = document.querySelectorAll('[aria-label="Toggle between Dark and Light mode"] svg');
           icons.forEach(icon => {
-            // Show moon in dark mode, sun in light mode
-            icon.setAttribute('name', isDark ? 'tabler:moon' : 'tabler:sun');
+            icon.setAttribute('name', isDark ? 'tabler:sun' : 'tabler:moon');
           });
-        }
-        
-        // Initial update
-        document.addEventListener('DOMContentLoaded', updateThemeIcon);
-        
-        // Listen for theme changes
-        window.addEventListener('theme:changed', updateThemeIcon);
+        });
       </script>
     </button>
   )

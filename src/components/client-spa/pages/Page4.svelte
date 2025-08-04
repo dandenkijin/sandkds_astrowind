@@ -1,129 +1,19 @@
 <script>
-  import BasePage from './BasePage.svelte';
-  import { FeaturesGrid, CallToAction } from '../../flowbite';
-
-  // button helper: primary → btn btn-primary, secondary/inline → btn btn-tertiary, neutral → btn
-  const toProjectButton = (text, url = '#', variant = 'primary') => ({
-    text,
-    url,
-    className: `btn ${variant === 'primary' ? 'btn-primary' : variant === 'neutral' ? '' : 'btn-tertiary'}`.trim()
-  });
+  import ComingSoon from '../components/ComingSoon.svelte';
   
-  // Page 4 specific data
+  // Page specific data
   const pageData = {
-    title: 'Sleep Coaching',
-    description: 'Empowering you with knowledge and skills for a confident birth experience.',
-    heroImage: '/images/placeholders/childbirth-education.jpg',
-    icon: 'tabler:book',
-    ctaText: 'View Class Schedule',
-    ctaLink: '/classes/childbirth',
-    pageId: 'page4'
+    title: 'Coming Soon',
+    description: 'This page is currently under development. We\'re working hard to bring you valuable content and resources.',
+    ctaText: 'Return to Home',
+    ctaLink: '/client#page1'
   };
-  
-  // Page 4 specific widgets
-  const pageWidgets = [
-    // Intro Section
-    {
-      id: 'education-intro',
-      component: FeaturesGrid,
-      showOnPages: ['page4'],
-      props: {
-        title: 'Comprehensive Sleep Coaching',
-        description: 'Our evidence-based Sleep Coaching classes are designed to prepare you and your partner for labor, delivery, and the early days with your newborn. Whether you prefer group classes or private instruction, we offer flexible options to fit your schedule and learning style.',
-        items: [{
-          title: 'Sleep Coaching',
-          description: 'Our evidence-based Sleep Coaching classes are designed to prepare you and your partner for labor, delivery, and the early days with your newborn.',
-          ctaButton: toProjectButton('View Class Options', '/classes/childbirth', 'tertiary')
-        }],
-        columns: 1,
-        align: 'left',
-        image: {
-          src: '/images/placeholders/childbirth-class.jpg',
-          alt: 'Sleep Coaching class',
-          position: 'right'
-        }
-      }
-    },
-    // Class Types Section
-    {
-      id: 'class-types',
-      component: FeaturesGrid,
-      showOnPages: ['page4'],
-      props: {
-        title: 'Our Class Offerings',
-        description: 'Choose the education path that\'s right for you',
-        items: [
-          {
-            title: 'Comprehensive Series',
-            description: 'Multi-week series covering all aspects of childbirth and newborn care',
-            icon: 'CalendarDaysSolid'
-          },
-          {
-            title: 'Weekend Intensive',
-            description: 'Condensed weekend workshop for busy parents-to-be',
-            icon: 'CalendarDaySolid'
-          },
-          {
-            title: 'Private Instruction',
-            description: 'Customized one-on-one sessions in your home',
-            icon: 'UserSolid'
-          },
-          {
-            title: 'Virtual Classes',
-            description: 'Live online classes from the comfort of your home',
-            icon: 'VideoCameraSolid'
-          },
-          {
-            title: 'Refresher Course',
-            description: 'For experienced parents preparing for another birth',
-            icon: 'ArrowPathSolid'
-          },
-          {
-            title: 'Sibling Class',
-            description: 'Helping big brothers and sisters prepare for baby',
-            icon: 'UserGroupSolid'
-          }
-        ],
-        columns: 2
-      }
-    },
-    // Curriculum Section
-    {
-      id: 'curriculum',
-      component: FeaturesGrid,
-      showOnPages: ['page4'],
-      props: {
-        title: 'What You\'ll Learn',
-        description: 'Our comprehensive curriculum covers all aspects of childbirth and early parenting, including:\n\n• Stages of labor and what to expect\n• Comfort measures and pain management options\n• Medical procedures and interventions\n• Birth planning and advocacy\n• Newborn care basics\n• Postpartum recovery and adjustment\n\nAll classes include hands-on practice, visual aids, and ample time for questions.',
-        items: [{
-          title: 'Curriculum Details',
-          description: 'Our comprehensive curriculum covers all aspects of childbirth and early parenting, including stages of labor, comfort measures, medical procedures, birth planning, newborn care, and postpartum recovery.',
-          ctaButton: toProjectButton('Download Class Syllabus', '/downloads/childbirth-education-syllabus.pdf', 'tertiary')
-        }],
-        columns: 1,
-        align: 'right',
-        image: {
-          src: '/images/placeholders/childbirth-education-2.jpg',
-          alt: 'Childbirth education',
-          position: 'left'
-        }
-      }
-    },
-    // Call to Action
-    {
-      id: 'education-cta',
-      component: CallToAction,
-      showOnPages: ['page4'],
-      props: {
-        title: 'Ready to Prepare for Your Birth?',
-        description: 'Join our supportive community of expectant parents and gain the knowledge and confidence you need for a positive birth experience.',
-        primaryButton: toProjectButton('Register for Classes', '/register/childbirth-classes', 'primary'),
-        secondaryButton: toProjectButton('Meet Our Educators', '/about/educators', 'tertiary'),
-        align: 'center',
-        background: 'gradient'
-      }
-    }
-  ];
 </script>
 
-<BasePage {pageData} {pageWidgets} />
+<!-- Coming Soon Component -->
+<ComingSoon 
+  title={pageData.title}
+  description={pageData.description}
+  ctaText={pageData.ctaText}
+  ctaLink={pageData.ctaLink}
+/>

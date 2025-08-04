@@ -1,16 +1,16 @@
 <script>
-  import BasePage from './BasePage.svelte';
-  import { FeaturesGrid, CallToAction } from '../../flowbite';
-
-  // button helper: primary → btn btn-primary, secondary/inline → btn btn-tertiary, neutral → btn
-  const toProjectButton = (text, url = '#', variant = 'primary') => ({
-    text,
-    url,
-    className: `btn ${variant === 'primary' ? 'btn-primary' : variant === 'neutral' ? '' : 'btn-tertiary'}`.trim()
-  });
+  import ComingSoon from '../components/ComingSoon.svelte';
+  
+  // Page specific data
+  const pageData = {
+    title: 'Coming Soon',
+    description: 'This page is currently under development. We\'re working hard to bring you valuable content and resources.',
+    ctaText: 'Return to Home',
+    ctaLink: '/client#page1'
+  };
   
   // Page 3 specific data
-  const pageData = {
+  const lactationPageData = {
     title: 'Lactation Support',
     description: 'Gentle, expert guidance for breastfeeding, pumping, and all your feeding goals.',
     heroImage: '/src/assets/images/Breastfeeding-support-group-updated.avif',

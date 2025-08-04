@@ -1,0 +1,142 @@
+/* Island-local mirror of project button styles.
+   Use by importing in Svelte components:
+   <style src="../styles/buttons.css"></style>
+*/
+
+/* Base button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.5rem; /* rounded-3xl */
+  border: 1px solid rgba(156, 163, 175, 1); /* border-gray-400 */
+  background-color: transparent;
+  font-weight: 500; /* font-medium */
+  text-align: center;
+  font-size: 1rem; /* text-base */
+  line-height: 1.25rem; /* leading-snug-ish */
+  transition: background-color .2s ease-in, border-color .2s ease-in, color .2s ease-in, transform .2s ease-in;
+  padding: 0.75rem 2rem; /* py-3 px-8 */
+  cursor: pointer;
+  color: var(--aw-color-text-page, #0f172a); /* text-page fallback slate-900 */
+}
+
+/* Focus ring approximation */
+.btn:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(59, 130, 246, 0.6),   /* focus:ring-blue-500 */
+    0 0 0 4px rgba(191, 219, 254, 0.5);  /* focus:ring-offset-blue-200 */
+}
+
+/* Hover base */
+.btn:hover {
+  background-color: rgba(243, 244, 246, 1); /* hover:bg-gray-100 */
+  border-color: rgba(75, 85, 99, 1);        /* hover:border-gray-600 */
+}
+
+/* Primary */
+.btn-primary {
+  /* inherit base btn styles by duplicating the minimal needed overlap to avoid nonstandard 'composes' */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.5rem;
+  font-weight: 600; /* font-semibold */
+  text-align: center;
+  line-height: 1.25rem;
+  transition: background-color .2s ease-in, border-color .2s ease-in, color .2s ease-in, transform .2s ease-in;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+
+  color: #fff;
+  background-color: var(--btn-primary, #ec4899); /* pink-500 fallback */
+  border: 1px solid var(--btn-primary, #ec4899);
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-secondary, #db2777); /* pink-600 fallback */
+  border-color: var(--btn-secondary, #db2777);
+  color: #fff;
+}
+
+/* Secondary - approximate base btn */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(156, 163, 175, 1);
+  background-color: transparent;
+  font-weight: 500;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  transition: background-color .2s ease-in, border-color .2s ease-in, color .2s ease-in, transform .2s ease-in;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  color: var(--aw-color-text-page, #0f172a);
+}
+
+/* Tertiary */
+.btn-tertiary {
+  /* approximate base btn sans border/shadow */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.5rem;
+  background-color: transparent;
+  font-weight: 500;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  transition: background-color .2s ease-in, border-color .2s ease-in, color .2s ease-in, transform .2s ease-in;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+
+  border: none;
+  box-shadow: none;
+  color: var(--aw-color-text-muted, #64748b); /* text-muted fallback slate-500 */
+}
+
+.btn-tertiary:hover {
+  color: rgba(17, 24, 39, 1); /* hover:text-gray-900 */
+}
+
+/* Medium breakpoint padding bump similar to @screen md .btn { @apply px-10 } */
+@media (min-width: 768px) {
+  .btn {
+    padding-left: 2.5rem; /* px-10 */
+    padding-right: 2.5rem;
+  }
+}
+
+/* Dark theme support (approximate) */
+:root.dark .btn {
+  color: #cbd5e1;                /* dark:text-slate-300 */
+  border-color: #64748b;         /* dark:border-slate-500 */
+}
+
+:root.dark .btn:hover {
+  background-color: #1f2937;     /* dark:hover:bg-slate-800 */
+  border-color: #1f2937;         /* dark:hover:border-slate-800 */
+}
+
+:root.dark .btn-primary {
+  background-color: var(--btn-primary, #ec4899);
+  border-color: var(--btn-primary, #ec4899);
+  color: #fff;
+}
+
+:root.dark .btn-primary:hover {
+  background-color: var(--btn-secondary, #db2777);
+  border-color: var(--btn-secondary, #db2777);
+}
+
+:root.dark .btn-tertiary {
+  color: #94a3b8; /* dark:text-gray-400 */
+}
+
+:root.dark .btn-tertiary:hover {
+  color: #fff; /* dark:hover:text-white */
+}

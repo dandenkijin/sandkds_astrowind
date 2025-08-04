@@ -1,4 +1,6 @@
 <script>
+  import Button from '../client-spa/components/Button.svelte';
+  
   export let title = '';
   export let content = '';
   export let image = '';
@@ -71,15 +73,18 @@
     {#if actions && actions.length > 0}
       <div class="mt-6 flex flex-wrap gap-3">
         {#each actions as action}
-          <a 
-            href={action.href || '#'} 
-            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700"
+          <Button 
+            href={action.href}
+            variant={action.variant || 'primary'}
+            size={action.size || 'md'}
+            on:click={action.onClick}
+            class={action.className}
           >
             {action.label}
             {#if action.icon}
               <span class="ml-2" innerHTML={action.icon}></span>
             {/if}
-          </a>
+          </Button>
         {/each}
       </div>
     {/if}

@@ -24,9 +24,9 @@
   }> = [];
   let particleSizes: Float32Array;
   // Fewer particles with stronger motion
-  let PARTICLE_COUNT = 150;
+  let PARTICLE_COUNT = 50;
   if (typeof window !== 'undefined') {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 4);
     const cores = (navigator as Navigator & { hardwareConcurrency?: number }).hardwareConcurrency ?? 4;
     const perfFactor = Math.min(1.1, Math.max(0.6, (cores / 8) * (1.0 / dpr)));
     PARTICLE_COUNT = Math.round(PARTICLE_COUNT * perfFactor);
@@ -222,16 +222,16 @@
     geometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
     geometry.setAttribute('size', new THREE.BufferAttribute(particleSizes, 1));
     
-    // Create particle material as round points with dark color on light bg
+    // Create particle material as round points; balanced blending for visibility
     const particleMaterial = new THREE.PointsMaterial({
-      size: 0.5,
-      color: 0x111111, // dark particles
+      size: 1.6, // larger so points are clearly visible
+      color: 0xffffff, // base white; vertexColors provide hues
       transparent: true,
-      opacity: 0.9,
-      blending: THREE.NormalBlending,
+      opacity: 1.0,
+      blending: THREE.NormalBlending, // Normal ensures consistent visibility on all backgrounds
       sizeAttenuation: true,
       vertexColors: true,
-      alphaTest: 0.05,
+      alphaTest: 0.01,
       depthWrite: false
     });
     // Use a circular alpha map for perfectly round particles
@@ -242,47 +242,40 @@
     if (ctx) {
       const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       g.addColorStop(0, 'rgba(255,255,255,1)');
-      g.addColorStop(0.7, 'rgba(255,255,255,0.8)');
+      g.addColorStop(0.7, 'rgba(255,255,255,0.9)');
       g.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.arc(32, 32, 32, 0, Math.PI * 2);
       ctx.fill();
       const map = new THREE.CanvasTexture(circleCanvas);
-      map.anisotropy = 2;
+      map.colorSpace = THREE.SRGBColorSpace;
+      map.anisotropy = 4;
       particleMaterial.alphaMap = map;
       particleMaterial.needsUpdate = true;
     }
     
-    // Create per-particle colors with theme-aware luminosity
+    // Create per-particle colors; ensure mid/high brightness for visibility
     const colors = new Float32Array(PARTICLE_COUNT * 3);
-    // Pastel but visible palette: rose, mauve, peach, lavender, teal — darkened slightly for contrast
     const PASTEL_PALETTE = [
-      new THREE.Color('#e879f9'), // fuchsia-400
       new THREE.Color('#f472b6'), // pink-400
       new THREE.Color('#fb7185'), // rose-400
       new THREE.Color('#a78bfa'), // violet-400
       new THREE.Color('#60a5fa'), // blue-400
       new THREE.Color('#34d399'), // emerald-400
       new THREE.Color('#fbbf24'), // amber-400
+      new THREE.Color('#f59e0b'), // amber-500 (a bit stronger)
     ];
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      // pick pastel and nudge toward darker to stand out on light bg
       const base = PASTEL_PALETTE[Math.floor(Math.random() * PASTEL_PALETTE.length)].clone();
       const hsl: HSL = { h: 0, s: 0, l: 0 };
       (base as unknown as { getHSL: (o: HSL) => HSL }).getHSL(hsl);
       const adjusted = base.clone().setHSL(
         hsl.h,
-        Math.min(1, hsl.s * 0.95),
-        Math.max(0.35, hsl.l * 0.6) // ensure sufficiently dark pastel
+        Math.min(1, hsl.s * 1.0),
+        Math.min(0.75, Math.max(0.5, hsl.l)) // mid-high lightness to be visible
       );
-      adjusted.offsetHSL(
-        (Math.random() - 0.5) * 0.06,
-        (Math.random() - 0.5) * 0.06,
-        (Math.random() - 0.5) * 0.05
-      );
-
       colors[i * 3] = adjusted.r;
       colors[i * 3 + 1] = adjusted.g;
       colors[i * 3 + 2] = adjusted.b;
@@ -294,14 +287,9 @@
     particles = new THREE.Points(geometry, particleMaterial);
     scene.add(particles);
     
-    // Add ambient light for subtle illumination
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    // Minimal lighting; PointsMaterial w/ vertex colors doesn't require lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.05);
     scene.add(ambientLight);
-    
-    // Add subtle point light
-    const pointLight = new THREE.PointLight(0x4a90e2, 1, 50);
-    pointLight.position.set(10, 10, 10);
-    scene.add(pointLight);
     
     // Mouse movement variables
     const mouse = new THREE.Vector2();
@@ -369,7 +357,7 @@
         
         // Stronger and faster pulsing
         const pulse = Math.sin(time * 0.9 + i * 0.03) * 0.16 + 0.95;
-        particleSizes[i] = 2.2 * pulse;
+        particleSizes[i] = 2.6 * pulse; // slightly larger baseline to ensure visibility
       }
       
       // Update particle geometry
@@ -379,6 +367,8 @@
       if (Math.floor(time * 6) % 6 === 0) {
         // update color a bit less, size every tick for the pulse
         particles.geometry.attributes.size.needsUpdate = true;
+        // Also refresh color occasionally in case of gamma/space changes
+        particles.geometry.attributes.color.needsUpdate = true;
       }
       
       // Slightly slower rotation so dispersion reads more clearly
@@ -420,40 +410,37 @@
         (particles.material as THREE.PointsMaterial).color = new THREE.Color(0x111111);
         (particles.material as THREE.PointsMaterial).opacity = 0.9;
 
-        // Recompute vertex colors with theme-aware contrast
+        // Recompute vertex colors with theme-aware contrast (keep visible/pastel hues)
         const colorsAttr = particles.geometry.getAttribute('color') as THREE.BufferAttribute;
         const arr = colorsAttr.array as Float32Array;
+        const REPALETTE = [
+          new THREE.Color('#f472b6'),
+          new THREE.Color('#fb7185'),
+          new THREE.Color('#a78bfa'),
+          new THREE.Color('#60a5fa'),
+          new THREE.Color('#34d399'),
+          new THREE.Color('#fbbf24'),
+          new THREE.Color('#f59e0b'),
+        ];
         for (let i = 0; i < PARTICLE_COUNT; i++) {
-          // Recompute using the pastel palette, keeping them dark enough
-          const pastel = [
-            new THREE.Color('#e879f9'),
-            new THREE.Color('#f472b6'),
-            new THREE.Color('#fb7185'),
-            new THREE.Color('#a78bfa'),
-            new THREE.Color('#60a5fa'),
-            new THREE.Color('#34d399'),
-            new THREE.Color('#fbbf24'),
-          ];
-          const base = pastel[Math.floor(Math.random() * pastel.length)].clone();
+          const base = REPALETTE[Math.floor(Math.random() * REPALETTE.length)].clone();
           const hsl: HSL = { h: 0, s: 0, l: 0 };
           (base as unknown as { getHSL: (o: HSL) => HSL }).getHSL(hsl);
           const adjusted = base.clone().setHSL(
             hsl.h,
-            Math.min(1, hsl.s * 0.95),
-            Math.max(0.35, hsl.l * 0.6)
+            Math.min(1, hsl.s),
+            Math.min(0.75, Math.max(0.5, hsl.l))
           );
-          adjusted.offsetHSL(
-            (Math.random() - 0.5) * 0.06,
-            (Math.random() - 0.5) * 0.06,
-            (Math.random() - 0.5) * 0.05
-          );
-          // write back rgb
           arr[i * 3] = adjusted.r;
           arr[i * 3 + 1] = adjusted.g;
           arr[i * 3 + 2] = adjusted.b;
         }
         colorsAttr.needsUpdate = true;
-        (particles.material as THREE.PointsMaterial).needsUpdate = true;
+        const pm = particles.material as THREE.PointsMaterial;
+        pm.color = new THREE.Color(0xffffff);
+        pm.blending = THREE.NormalBlending;
+        pm.opacity = 1.0;
+        pm.needsUpdate = true;
       }
     });
     mo.observe(root, { attributes: true, attributeFilter: ['class'] });
@@ -517,22 +504,33 @@
       </p>
       
       <div class="button-container">
-        <button
-          on:click={() => navigateTo('corporate')}
+        <!-- Inline full Tailwind tokens for immediate styling (primary + tertiary) -->
+        <a
+          role="button"
+          tabindex="0"
+          href="/corporate"
+          on:click|preventDefault={() => navigateTo('corporate')}
           on:mouseenter={onHoverStart}
           on:mouseleave={onHoverEnd}
-          class="button button-corporate"
+          class="inline-flex items-center justify-center cursor-pointer select-none px-8 py-3 text-lg rounded-full shadow-lg transition-transform duration-300 hover:scale-105
+                 border border-slate-200/70 bg-white/90 text-slate-800 hover:bg-white hover:border-white hover:shadow-white/20
+                 dark:bg-slate-800/90 dark:text-slate-100 dark:border-slate-700 hover:dark:bg-slate-800"
         >
           Corporate Services
-        </button>
-        <button
-          on:click={() => navigateTo('client')}
+        </a>
+        <a
+          role="button"
+          tabindex="0"
+          href="/client"
+          on:click|preventDefault={() => navigateTo('client')}
           on:mouseenter={onHoverStart}
           on:mouseleave={onHoverEnd}
-          class="button button-client"
+          class="inline-flex items-center justify-center cursor-pointer select-none px-8 py-3 text-lg rounded-full shadow-lg transition-transform duration-300 hover:scale-105
+                 bg-primary text-white border border-primary/80 hover:bg-primary/90 hover:shadow-primary/20
+                 dark:bg-primary dark:text-white dark:border-primary/70 hover:dark:bg-primary/90"
         >
           Client Services
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -638,19 +636,11 @@
   }
   
   .button-container {
-    @apply flex flex-col sm:flex-row gap-6 justify-center;
+    @apply flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center;
   }
-  
-  .button {
-    @apply px-8 py-3 font-serif text-lg rounded-full border-2 transition-all duration-300 transform hover:scale-105 shadow-lg;
-  }
-  
-  .button-corporate {
-    @apply bg-pink-300/80 hover:bg-pink-200/90 text-gray-800 border-pink-400/50 hover:border-pink-300/70 hover:shadow-pink-200/20;
-  }
-  
-  .button-client {
-    @apply bg-white/90 hover:bg-white text-gray-800 border-white/80 hover:border-white hover:shadow-white/20;
+  /* Ensure anchors render as buttons with no underline in this scope */
+  .button-container a {
+    text-decoration: none;
   }
   
   /* Responsive adjustments */

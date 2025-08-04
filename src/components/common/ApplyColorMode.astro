@@ -4,30 +4,45 @@ import { UI } from 'astrowind:config';
 // TODO: This code is temporary
 ---
 
-<script is:inline define:vars={{ defaultTheme: UI.theme || 'system' }}>
-  function applyTheme(theme) {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
+<script is:inline>
+  // Initialize theme from localStorage or system preference
+  function initTheme() {
+    const root = document.documentElement;
+    const savedTheme = localStorage.theme;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Apply theme based on saved preference or system preference
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      root.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
     }
-    const matches = document.querySelectorAll('[data-aw-toggle-color-scheme] > input');
-
-    if (matches && matches.length) {
-      matches.forEach((elem) => {
-        elem.checked = theme !== 'dark';
-      });
+    
+    // Update any theme toggle icons
+    const themeToggles = document.querySelectorAll('[aria-label="Toggle between Dark and Light mode"] svg');
+    themeToggles.forEach(icon => {
+      icon.setAttribute('name', root.classList.contains('dark') ? 'tabler:sun' : 'tabler:moon');
+    });
+  }
+  
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', initTheme);
+  
+  // Listen for theme changes from other components
+  window.addEventListener('theme:changed', (e) => {
+    const root = document.documentElement;
+    const theme = e.detail?.theme;
+    
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
     }
-  }
-
-  if ((defaultTheme && defaultTheme.endsWith(':only')) || (!localStorage.theme && defaultTheme !== 'system')) {
-    applyTheme(defaultTheme.replace(':only', ''));
-  } else if (
-    localStorage.theme === 'dark' ||
-    (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  ) {
-    applyTheme('dark');
-  } else {
-    applyTheme('light');
-  }
+    
+    // Update any theme toggle icons
+    const themeToggles = document.querySelectorAll('[aria-label="Toggle between Dark and Light mode"] svg');
+    themeToggles.forEach(icon => {
+      icon.setAttribute('name', theme === 'dark' ? 'tabler:sun' : 'tabler:moon');
+    });
+  });
 </script>

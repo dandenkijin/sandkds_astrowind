@@ -1,6 +1,13 @@
 <script>
   import BasePage from './BasePage.svelte';
   import { FeaturesGrid, CallToAction } from '../../flowbite';
+
+  // button helper: primary → btn btn-primary, secondary/inline → btn btn-tertiary, neutral → btn
+  const toProjectButton = (text, url = '#', variant = 'primary') => ({
+    text,
+    url,
+    className: `btn ${variant === 'primary' ? 'btn-primary' : variant === 'neutral' ? '' : 'btn-tertiary'}`.trim()
+  });
   
   // Page 5 specific data
   const pageData = {
@@ -26,8 +33,7 @@
         items: [{
           title: 'Sibling Preparation',
           description: 'Help your child understand and prepare for their new role as a big brother or sister with our age-appropriate resources and classes.',
-          ctaText: 'View Sibling Preparation Tips',
-          ctaLink: '/blog/preparing-siblings'
+          ctaButton: toProjectButton('View Sibling Preparation Tips', '/blog/preparing-siblings', 'tertiary')
         }],
         columns: 1,
         align: 'right',
@@ -82,8 +88,7 @@
         items: [{
           title: 'Sibling Bonding Activities',
           description: '• Read books about becoming a big brother/sister together\n• Have them help prepare the nursery or pick out a gift for the baby\n• Look at their own baby photos and share stories\n• Practice gentle touch with a doll or stuffed animal\n• Create a special "big sibling" photo album\n• Set aside special one-on-one time after baby arrives',
-          ctaText: 'Download Activity Guide',
-          ctaLink: '/downloads/sibling-activities.pdf'
+          ctaButton: toProjectButton('Download Activity Guide', '/downloads/sibling-activities.pdf', 'tertiary')
         }],
         columns: 1,
         align: 'left',
@@ -102,14 +107,8 @@
       props: {
         title: 'Help Your Child Embrace Their New Role',
         description: 'Our sibling preparation classes and resources make the transition smoother for your entire family.',
-        primaryButton: {
-          text: 'Register for Sibling Class',
-          url: '/classes/sibling-preparation'
-        },
-        secondaryButton: {
-          text: 'Get Sibling Prep Kit',
-          url: '/shop/sibling-kit'
-        },
+        primaryButton: toProjectButton('Register for Sibling Class', '/classes/sibling-preparation', 'primary'),
+        secondaryButton: toProjectButton('Get Sibling Prep Kit', '/shop/sibling-kit', 'tertiary'),
         align: 'center',
         background: 'gradient'
       }

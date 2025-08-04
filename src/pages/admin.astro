@@ -1,6 +1,27 @@
 ---
-// src/pages/admin.astro
-import { TinaAdmin } from 'tinacms';
+/**
+ * TinaCMS Admin entry
+ * Use the generated Tina admin wrapper under /admin (built by Tina CLI).
+ * For Astro, the simplest compatible approach is to present a redirect/fallback
+ * to the static admin build output at /admin/index.html which Tina generates.
+ *
+ * This avoids direct ESM imports that vary between Tina versions.
+ */
 ---
 
-<TinaAdmin />
+<!-- Server-side redirect hint is handled by src/pages/admin/index.astro -->
+<!-- Fallback client redirect in case SSR route is hit directly -->
+<script>
+  if (typeof window !== 'undefined') {
+    window.location.replace('/admin/index.html');
+  }
+</script>
+
+<noscript>
+  <meta http-equiv="refresh" content="0; url=/admin/index.html">
+  <div style="font-family: system-ui, -apple-system, sans-serif; text-align: center; margin-top: 2rem;">
+    <p>Redirecting to Tina Admin…</p>
+    <p>If not redirected, <a href="/admin/index.html">open Tina Admin</a>.</p>
+  </div>
+</noscript>
+

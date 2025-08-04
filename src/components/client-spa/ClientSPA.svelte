@@ -200,9 +200,9 @@
         on:click={() => navigate(page.id)}
 
         class={`
-          group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 flex flex-col
-          ${currentPage === page.id 
-            ? 'ring-2 ring-primary-500 dark:ring-primary-400 bg-white dark:bg-slate-800 shadow-lg' 
+          group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-300 flex flex-col
+          ${currentPage === page.id
+            ? 'ring-2 ring-primary-500 dark:ring-primary-400 bg-white dark:bg-slate-800 shadow-lg'
             : 'bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/50 hover:shadow-md'}
           hover:-translate-y-1
         `}
@@ -272,19 +272,18 @@
             </div>
           </div>
           <div class="flex justify-end mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/50">
-            <span class={`
-              inline-flex items-center text-sm font-medium transition-colors
-              ${currentPage === page.id 
-                ? 'text-primary-600 dark:text-primary-400' 
-                : 'text-slate-500 dark:text-slate-400 group-hover:text-primary-500 dark:group-hover:text-primary-400'}
-            `}>
+            <a
+              on:click={() => navigate(page.id)}
+              class={`btn btn-tertiary group cursor-pointer select-none ${currentPage === page.id ? 'text-primary-600 dark:text-primary-400' : ''}`}
+              role="button"
+            >
               {getActionText(i)}
-              <TablerIcon 
-                name="tabler:arrow-right" 
-                size={16} 
-                className="ml-1 transition-transform duration-200 group-hover:translate-x-1" 
+              <TablerIcon
+                name="tabler:arrow-right"
+                size={16}
+                className="ml-1 transition-transform duration-200 group-hover:translate-x-1"
               />
-            </span>
+            </a>
           </div>
         </div>
         
@@ -311,12 +310,13 @@
           <p class="text-slate-600 dark:text-slate-300 text-lg mb-6">
             Please select a service from the menu above to learn more about how we can support you.
           </p>
-          <button 
+          <a
             on:click={() => navigate('page1')}
-            class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            class="btn btn-primary cursor-pointer select-none"
+            role="button"
           >
             Get Started
-          </button>
+          </a>
         </div>
       </div>
     {:else}

@@ -21,6 +21,14 @@
     image: cardImage
   };
   
+  // helper for consistent project button styles on actions
+  const toProjectButton = (label, href = '#', variant = 'primary') => ({
+    label,
+    href,
+    icon: '',
+    className: `btn ${variant}` // Will use 'btn primary' or 'btn secondary' etc.
+  });
+  
   // Page 1 specific components
   const pageWidgets = [
     // Content Card Component
@@ -48,7 +56,7 @@
           {
             label: 'Book a Free Consultation',
             href: '/contact',
-            icon: ''
+            variant: 'primary'
           }
         ]
       }
@@ -93,11 +101,28 @@
   });
 </script>
 
-<PageTemplate 
+<!-- Button styles have been moved to the Button component -->
+
+<PageTemplate
   title={pageData.title}
   description={pageData.description}
   heroImage={pageData.heroImage}
   ctaText={pageData.ctaText}
-  widgets={pageWidgets} 
-  pageId={pageData.pageId} 
-/>
+  ctaClass="btn btn-primary rounded-3xl bg-[#ec4899] hover:bg-[#db2777] border border-[#ec4899]/90 hover:border-[#db2777] text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3b82f6]"
+  widgets={pageWidgets.map(w => {
+    if (w?.props?.actions && Array.isArray(w.props.actions)) {
+      w = {
+        ...w,
+        props: {
+          ...w.props,
+          actions: w.props.actions.map(a => ({
+            ...a,
+            className: a.className ?? 'btn btn-tertiary'
+          }))
+        }
+      };
+    }
+    return w;
+  })}
+  pageId={pageData.pageId}
+ />

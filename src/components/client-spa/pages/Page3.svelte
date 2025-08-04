@@ -1,6 +1,13 @@
 <script>
   import BasePage from './BasePage.svelte';
   import { FeaturesGrid, CallToAction } from '../../flowbite';
+
+  // button helper: primary → btn btn-primary, secondary/inline → btn btn-tertiary, neutral → btn
+  const toProjectButton = (text, url = '#', variant = 'primary') => ({
+    text,
+    url,
+    className: `btn ${variant === 'primary' ? 'btn-primary' : variant === 'neutral' ? '' : 'btn-tertiary'}`.trim()
+  });
   
   // Page 3 specific data
   const pageData = {
@@ -26,8 +33,8 @@
         items: [{
           title: 'Lactation Support',
           description: 'Get personalized guidance from our IBCLCs to help you achieve your breastfeeding goals with confidence.',
-          ctaText: 'Schedule a Consultation',
-          ctaLink: '/contact'
+          // map CTA to project button classes
+          ctaButton: toProjectButton('Schedule a Consultation', '/contact', 'primary')
         }],
         columns: 1,
         align: 'right',
@@ -89,14 +96,8 @@
       props: {
         title: 'Get the Support You Need',
         description: 'Our IBCLCs are here to help you overcome challenges and meet your breastfeeding goals with confidence.',
-        primaryButton: {
-          text: 'Book a Lactation Consultation',
-          url: '/contact'
-        },
-        secondaryButton: {
-          text: 'View Our Services',
-          url: '/services/lactation'
-        },
+        primaryButton: toProjectButton('Book a Lactation Consultation', '/contact', 'primary'),
+        secondaryButton: toProjectButton('View Our Services', '/services/lactation', 'tertiary'),
         align: 'center',
         background: 'gradient'
       }

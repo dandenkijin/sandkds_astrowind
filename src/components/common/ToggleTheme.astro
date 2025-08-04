@@ -1,21 +1,17 @@
 ---
 import { Icon } from 'astro-icon/components';
-
 import { UI } from 'astrowind:config';
 
 export interface Props {
   label?: string;
   class?: string;
   iconClass?: string;
-  iconName?: string;
 }
 
 const {
   label = 'Toggle between Dark and Light mode',
-  class:
-    className = 'text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center',
+  class: className = 'text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center',
   iconClass = 'w-6 h-6',
-  iconName = 'tabler:sun',
 } = Astro.props;
 ---
 
@@ -25,25 +21,46 @@ const {
       type="button"
       class={className}
       aria-label={label}
-      data-aw-toggle-color-scheme
-      onclick={`(function(){
-        try {
+      onclick={`
+        const root = document.documentElement;
+        const isDark = root.classList.contains('dark');
+        
+        // Toggle theme
+        if (isDark) {
+          root.classList.remove('dark');
+          localStorage.theme = 'light';
+          this.querySelector('svg').setAttribute('name', 'tabler:moon');
+        } else {
+          root.classList.add('dark');
+          localStorage.theme = 'dark';
+          this.querySelector('svg').setAttribute('name', 'tabler:sun');
+        }
+        
+        // Dispatch event for other components
+        window.dispatchEvent(new CustomEvent('theme:changed', {
+          detail: { theme: isDark ? 'light' : 'dark' }
+        }));
+      `}
+    >
+      <Icon name="tabler:moon" class={iconClass} data-theme-icon />
+      <script is:inline>
+        // Initialize icon on load
+        function updateThemeIcon() {
           const root = document.documentElement;
           const isDark = root.classList.contains('dark');
-          const next = isDark ? 'light' : 'dark';
-          // Persist choice
-          localStorage.theme = next;
-          // Apply class
-          if (next === 'dark') root.classList.add('dark');
-          else root.classList.remove('dark');
-          // Dispatch a custom event so listeners (e.g., SPA) can react
-          window.dispatchEvent(new CustomEvent('theme:changed', { detail: { theme: next }}));
-        } catch(e) {
-          console.warn('Theme toggle failed', e);
+          const icons = document.querySelectorAll('[data-theme-icon]');
+          icons.forEach(icon => {
+            // Show moon in dark mode, sun in light mode
+            icon.setAttribute('name', isDark ? 'tabler:moon' : 'tabler:sun');
+          });
         }
-      })()`}
-    >
-      <Icon name={iconName} class={iconClass} />
+        
+        // Initial update
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+        
+        // Listen for theme changes
+        window.addEventListener('theme:changed', updateThemeIcon);
+      </script>
     </button>
   )
 }

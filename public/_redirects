@@ -1,2 +1,8 @@
+# Tina Admin dev proxy (prevents cross-origin Vite HMR when Tina runs on :4001)
+# Forward /admin and its assets to the Tina dev server during development.
+# Netlify format also works with many local dev servers.
+/admin    http://localhost:4001   200
+/admin/*  http://localhost:4001/:splat   200
+
 # SPA fallback
 /*    /index.html   200

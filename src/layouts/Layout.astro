@@ -47,19 +47,22 @@ const { language, textDirection } = I18N;
     <Metadata {...metadata} />
     <SiteVerification />
     <Analytics />
+    <!-- Removed any use of Astro.clientAddress to avoid prerender errors -->
 
     <!-- Scripts -->
     {scripts.map((script) => (
-      <script 
-        src={script.src} 
+      <script
+        src={script.src}
         type={script.type || 'application/javascript'}
         async={script.async}
         defer={script.defer}
       />
     ))}
+    <!-- Removed Astro.clientAddress-based preload to prevent prerender crashes -->
 
     <!-- Comment the line below to disable View Transitions -->
     <ClientRouter fallback="swap" />
+    <!-- Remove problematic Astro.clientAddress usage (added earlier) to avoid prerender errors -->
   </head>
 
   <body class="antialiased text-default bg-page tracking-tight">

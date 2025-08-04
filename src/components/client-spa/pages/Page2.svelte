@@ -1,6 +1,6 @@
 <script>
   // import BasePage from './BasePage.svelte';
-  import CallToAction from '../../flowbite/CallToAction.svelte';
+  import CTASection from '../components/CTASection.svelte';
   import PageTemplate from '../PageTemplate.svelte';
   import FeaturesGrid from '../../flowbite/FeaturesGrid.svelte'; // Using FeaturesGrid from Flowbite
   import ContentCard from '../../flowbite/ContentCard.svelte';
@@ -8,6 +8,14 @@
   // Import the image using Astro's asset handling
   import cardImage from '/src/assets/images/postpartum_scene_breakfast_mom_doula_dad.png';
   
+  // helper for consistent project button styles on actions
+  const toProjectButton = (label, href = '#', variant = 'primary') => ({
+    label,
+    href,
+    variant,
+    icon: ''
+  });
+
   // Page 2 specific data
   const pageData = {
     title: 'Postpartum Doula Care',
@@ -47,8 +55,7 @@
           {
             label: 'Learn More About Our Postpartum Services',
             href: '/services/postpartum',
-            variant: 'primary',
-            size: 'lg'
+            variant: 'primary'
           }
         ]
       }
@@ -199,31 +206,34 @@
     // Call to Action
     {
       id: 'postpartum-cta',
-      component: CallToAction,
+      component: CTASection,
       showOnPages: ['page2'],
       props: {
         title: 'Get the Support You Deserve',
         description: 'Contact us to learn more about our postpartum doula services and how we can help your family thrive.',
-        primaryButton: {
-          text: 'Schedule a Consultation',
-          url: '/contact'
-        },
-        secondaryButton: {
-          text: 'View Service Packages',
-          url: '/services/postpartum#packages'
-        },
-        align: 'center',
-        background: 'gradient'
+        actions: [
+          { 
+            label: 'Schedule a Consultation',
+            href: '/contact',
+            variant: 'primary'
+          },
+          {
+            label: 'View Service Packages',
+            href: '/services/postpartum#packages',
+            variant: 'secondary'
+          }
+        ]
       }
     }
   ];
 </script>
 
-<PageTemplate 
+<PageTemplate
   title={pageData.title}
   description={pageData.description}
   heroImage={pageData.heroImage}
   ctaText={pageData.ctaText}
-  widgets={pageWidgets} 
-  pageId={pageData.pageId} 
+  ctaClass="btn btn-primary"
+  widgets={pageWidgets}
+  pageId={pageData.pageId}
 />

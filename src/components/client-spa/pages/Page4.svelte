@@ -1,6 +1,13 @@
 <script>
   import BasePage from './BasePage.svelte';
   import { FeaturesGrid, CallToAction } from '../../flowbite';
+
+  // button helper: primary → btn btn-primary, secondary/inline → btn btn-tertiary, neutral → btn
+  const toProjectButton = (text, url = '#', variant = 'primary') => ({
+    text,
+    url,
+    className: `btn ${variant === 'primary' ? 'btn-primary' : variant === 'neutral' ? '' : 'btn-tertiary'}`.trim()
+  });
   
   // Page 4 specific data
   const pageData = {
@@ -26,8 +33,7 @@
         items: [{
           title: 'Sleep Coaching',
           description: 'Our evidence-based Sleep Coaching classes are designed to prepare you and your partner for labor, delivery, and the early days with your newborn.',
-          ctaText: 'View Class Options',
-          ctaLink: '/classes/childbirth'
+          ctaButton: toProjectButton('View Class Options', '/classes/childbirth', 'tertiary')
         }],
         columns: 1,
         align: 'left',
@@ -92,8 +98,7 @@
         items: [{
           title: 'Curriculum Details',
           description: 'Our comprehensive curriculum covers all aspects of childbirth and early parenting, including stages of labor, comfort measures, medical procedures, birth planning, newborn care, and postpartum recovery.',
-          ctaText: 'Download Class Syllabus',
-          ctaLink: '/downloads/childbirth-education-syllabus.pdf'
+          ctaButton: toProjectButton('Download Class Syllabus', '/downloads/childbirth-education-syllabus.pdf', 'tertiary')
         }],
         columns: 1,
         align: 'right',
@@ -112,14 +117,8 @@
       props: {
         title: 'Ready to Prepare for Your Birth?',
         description: 'Join our supportive community of expectant parents and gain the knowledge and confidence you need for a positive birth experience.',
-        primaryButton: {
-          text: 'Register for Classes',
-          url: '/register/childbirth-classes'
-        },
-        secondaryButton: {
-          text: 'Meet Our Educators',
-          url: '/about/educators'
-        },
+        primaryButton: toProjectButton('Register for Classes', '/register/childbirth-classes', 'primary'),
+        secondaryButton: toProjectButton('Meet Our Educators', '/about/educators', 'tertiary'),
         align: 'center',
         background: 'gradient'
       }

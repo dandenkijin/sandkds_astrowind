@@ -81,11 +81,11 @@
       image: '/images/prenatal-education.png',
       imageAlt: 'Group prenatal class in session'
     },
-    { 
-      id: 'page6', 
-      title: 'Virtual Doula Support', 
+    {
+      id: 'page6',
+      title: 'Virtual Doula Support',
       description: 'Professional doula support available wherever you are through virtual consultations.',
-      icon: 'tabler:heart-broken',
+      icon: 'tabler:device-laptop',
       image: '/images/virtual-support.png',
       imageAlt: 'Virtual doula consultation on a laptop'
     }
@@ -251,8 +251,8 @@
           <div class="flex items-start mb-4">
             <div class={`
               p-2 rounded-lg mr-3 transition-colors duration-200 shrink-0
-              ${currentPage === page.id 
-                ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300' 
+              ${currentPage === page.id
+                ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300'
                 : 'bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20'}
             `}>
               <TablerIcon name={page.icon} size={20} className="text-current" />
@@ -260,8 +260,8 @@
             <div>
               <h3 class={`
                 text-lg font-semibold leading-tight
-                ${currentPage === page.id 
-                  ? 'text-slate-900 dark:text-white' 
+                ${currentPage === page.id
+                  ? 'text-slate-900 dark:text-white'
                   : 'text-slate-800 dark:text-slate-200 group-hover:text-primary-600 dark:group-hover:text-primary-400'}
               `}>
                 {page.title}

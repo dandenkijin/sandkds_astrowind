@@ -1,0 +1,35 @@
+# Exclude common heavy/unnecessary directories from AppSail archive
+node_modules/
+.git/
+.vscode/
+dist/
+.cache/
+.astro/
+coverage/
+tina/__generated__/
+tina/.cache/
+tmp/
+.temp/
+.svelte-kit/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs and maps
+**/*.log
+**/*.map
+
+# Test artifacts
+reports/
+junit/
+.tap/
+.nyc_output/
+
+# Local env and config that shouldn't be uploaded
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

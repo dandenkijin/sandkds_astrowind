@@ -1,0 +1,12 @@
+{
+  "command": "sh -c 'npm ci && npm run tina-build && nginx -g \"daemon off;\"'",
+  "build_path": ".",
+  "stack": "node20",
+  "env_variables": {
+    "NODE_ENV": "production"
+  },
+  "memory": 256,
+  "scripts": {
+    "postBuild": "npm ci && npm run tina-build"
+  }
+}

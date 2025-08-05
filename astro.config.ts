@@ -11,7 +11,10 @@ import svelte from '@astrojs/svelte';
 
 export default defineConfig({
   // Basic configuration
-  output: 'static', // Changed from 'server' to 'static' for SSG
+  // For AppSail, we can serve static assets via Nginx (current Dockerfile),
+  // and expose any dynamic API under /api via Astro endpoints running in Node during preview/dev.
+  // Keep SSG for pages; API routes are server-only and not pre-rendered.
+  output: 'static',
   outDir: 'dist',
   publicDir: 'public',
   // Remove the Node.js adapter since we're using static site generation

@@ -1,0 +1,13 @@
+# Tina Admin dev proxy (prevents cross-origin Vite HMR when Tina runs on :4001)
+# Forward /admin to the Tina dev server during development.
+/admin    http://localhost:4001   200
+
+# IMPORTANT: Never proxy static assets - let the platform serve them from ./dist or ./public
+# This ensures /admin/assets/* are served as real JS/CSS files, not by the Astro route.
+/admin/assets/*   /admin/assets/:splat   200
+
+# For any other /admin/* path (non-assets), forward to the dev server if it's running
+/admin/*  http://localhost:4001/:splat   200
+
+# SPA fallback for the main site (do not catch /admin/assets)
+/*    /index.html   200

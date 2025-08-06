@@ -106,7 +106,7 @@ const schema = defineSchema({
 const config = defineConfig({
   clientId: process.env.TINA_CLIENT_ID,
   token: process.env.TINA_TOKEN,
-  branch: 'master',
+  branch: 'prod_test_redux',
   build: {
     outputFolder: 'admin',
     publicFolder: 'public',

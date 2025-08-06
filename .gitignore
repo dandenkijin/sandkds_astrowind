@@ -27,3 +27,6 @@ pnpm-lock.yaml
 
 # Crush agent cache
 .crush
+
+# AppSail prepared static bundle (copied from dist during deploy)
+appsail/public/

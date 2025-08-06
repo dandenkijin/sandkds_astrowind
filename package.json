@@ -23,10 +23,16 @@
     "fix": "npm run fix:eslint && npm run fix:prettier",
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier -w .",
+
     "appsail:login": "npx zcatalyst-cli login || true",
     "appsail:init": "npx zcatalyst-cli init --only appsail || true",
-    "appsail:deploy": "npx zcatalyst-cli deploy --only appsail",
-    "appsail:logs": "npx zcatalyst-cli logs --only appsail"
+
+    "appsail:prepare": "rm -rf appsail/public && mkdir -p appsail/public && npm run tina-build && cp -r dist/* appsail/public/",
+    "appsail:deploy": "npm run appsail:prepare && npx zcatalyst-cli deploy --only appsail",
+
+    "appsail:logs": "echo \"The zcatalyst-cli does not provide a 'logs' command. Use the Catalyst Console: Console → AppSail → Your App → Logs.\"",
+    "appsail:status": "echo \"Check status in the Catalyst Console: Console → AppSail → Your App → Overview/Status.\"",
+    "appsail:open": "echo \"Open the Catalyst Console in your browser and navigate to AppSail to manage the service.\""
   },
   "dependencies": {
     "@astrojs/node": "^9.3.3",

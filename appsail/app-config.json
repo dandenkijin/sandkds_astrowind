@@ -1,0 +1,19 @@
+{
+  "command": "node ./server.js",
+  "build_path": ".",
+  "stack": "node20",
+  "env_variables": {
+    "NODE_ENV": "production",
+    "NODE_OPTIONS": "--max-old-space-size=256",
+    "PORT": "8080"
+  },
+  "memory": 512,
+  "timeout": 300,
+  "build_command": "npm ci --omit=dev && cd .. && npm ci --omit=dev && npm run tina-build && echo '<!doctype html><meta charset=\"utf-8\"><meta http-equiv=\"refresh\" content=\"0; url=/index.html\"><title>Redirecting…</title><a href=\"/index.html\">Redirecting to /index.html</a>' > ./appsail/public/redirect.html",
+  "routes": [
+    { "path": "/health.txt", "port": 8080 },
+    { "path": "/redirect.html", "port": 8080 },
+    { "path": "/", "port": 8080 },
+    { "path": "/*", "port": 8080 }
+  ]
+}
